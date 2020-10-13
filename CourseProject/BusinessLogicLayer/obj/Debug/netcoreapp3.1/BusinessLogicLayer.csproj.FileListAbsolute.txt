@@ -1,0 +1,12 @@
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\bin\Debug\netcoreapp3.1\BusinessLogicLayer.deps.json
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\bin\Debug\netcoreapp3.1\BusinessLogicLayer.dll
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\bin\Debug\netcoreapp3.1\BusinessLogicLayer.pdb
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\bin\Debug\netcoreapp3.1\ContextLibrary.dll
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\bin\Debug\netcoreapp3.1\ContextLibrary.pdb
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.csprojAssemblyReference.cache
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.AssemblyInfoInputs.cache
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.AssemblyInfo.cs
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.csproj.CoreCompileInputs.cache
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.csproj.CopyComplete
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.dll
+D:\programms\БД\Lab2\CourseProject\BusinessLogicLayer\obj\Debug\netcoreapp3.1\BusinessLogicLayer.pdb
