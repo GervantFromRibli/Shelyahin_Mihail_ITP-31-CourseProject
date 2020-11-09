@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.Models
+namespace CourseProject.Models
 {
     public class Waybill
     {

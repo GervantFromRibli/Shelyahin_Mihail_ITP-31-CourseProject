@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WebApp.Models
+namespace CourseProject.Models
 {
     // Класс контекста данных
     public class ApplicationContext : DbContext
