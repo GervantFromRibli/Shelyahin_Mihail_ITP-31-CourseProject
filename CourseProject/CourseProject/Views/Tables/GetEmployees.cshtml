@@ -1,0 +1,44 @@
+﻿@model List<CourseProject.Models.Employee>
+@{
+    ViewBag.Title = "Таблица клиентов";
+}
+
+@ViewBag.Title
+:
+<div>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>
+                    Id
+                </td>
+                <td>
+                    ФИО
+                </td>
+                <td>
+                    Должность
+                </td>
+                <td>
+                    Образование
+                </td>
+            </tr>
+        </thead>
+        @foreach (var elem in Model)
+        {
+            <tr>
+                <td>
+                    @elem.Id
+                </td>
+                <td>
+                    @elem.FIO
+                </td>
+                <td>
+                    @elem.Position
+                </td>
+                <td>
+                    @elem.Education
+                </td>
+            </tr>
+        }
+    </table>
+</div>

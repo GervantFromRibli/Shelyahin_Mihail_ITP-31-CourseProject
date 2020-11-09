@@ -27,7 +27,7 @@ namespace CourseProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Con")));
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
