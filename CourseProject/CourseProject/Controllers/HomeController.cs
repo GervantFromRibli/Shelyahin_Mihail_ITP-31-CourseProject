@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CourseProject.Models;
 
 namespace CourseProject.Controllers
 {
+    // Контроллер начальной страницы
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,12 +15,17 @@ namespace CourseProject.Controllers
             _logger = logger;
         }
 
+        // Метод получения начальной страницы.
+        // Начальная страница не кэшируется.
+        [ResponseCache(CacheProfileName = "NoCaching")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // Метод получения страницы ошибки.
+        // Страница ошибки не кэшируется.
+        [ResponseCache(CacheProfileName = "NoCaching")]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

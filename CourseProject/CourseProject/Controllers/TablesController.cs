@@ -1,42 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CourseProject.Controllers
 {
+    // Контроллер представления страниц записей из таблиц
     public class TablesController : Controller
     {
-        ApplicationContext db;
+        // Объект контекста данных
+        private readonly ApplicationContext db;
 
         public TablesController(ApplicationContext applicationContext)
         {
             db = applicationContext;
         }
 
+        // Метод получения страницы клиентов.
+        // Данная страница кэшируется на 286 секунд.
+        [ResponseCache(CacheProfileName = "TablesCaching")]
         public IActionResult GetClients()
         {
             List<Client> clients = db.Clients.ToList();
             return View(clients);
         }
 
+        // Метод получения страницы работников.
+        // Данная страница кэшируется на 286 секунд.
+        [ResponseCache(CacheProfileName = "TablesCaching")]
         public IActionResult GetEmployees()
         {
             List<Employee> employees = db.Employees.ToList();
             return View(employees);
         }
 
+        // Метод получения страницы мебели.
+        // Данная страница кэшируется на 286 секунд.
+        [ResponseCache(CacheProfileName = "TablesCaching")]
         public IActionResult GetFurniture()
         {
             List<Furniture> furnitures = db.Furniture.ToList();
             return View(furnitures);
         }
 
+        // Метод получения страницы заказов.
+        // Данная страница кэшируется на 286 секунд.
+        [ResponseCache(CacheProfileName = "TablesCaching")]
         public IActionResult GetOrders()
         {
             List<Order> orders = db.Orders.ToList();
+
+            // Преобразование данных для удобного представления
             List<OrderViewModel> orderViewModels = new List<OrderViewModel>();
             foreach (var order in orders)
             {
@@ -58,9 +72,14 @@ namespace CourseProject.Controllers
             return View(orderViewModels);
         }
 
+        // Метод получения страницы накладных.
+        // Данная страница кэшируется на 286 секунд.
+        [ResponseCache(CacheProfileName = "TablesCaching")]
         public IActionResult GetWaybills()
         {
             List<Waybill> waybills = db.Waybills.ToList();
+
+            // Преобразование данных для удобного представления
             List<WaybillViewModel> waybillViewModels = new List<WaybillViewModel>();
             foreach (var waybill in waybills)
             {

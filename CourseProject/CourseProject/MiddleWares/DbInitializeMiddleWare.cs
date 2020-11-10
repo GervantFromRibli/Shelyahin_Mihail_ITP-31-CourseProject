@@ -1,15 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace CourseProject.MiddleWares
 {
+    // Компонент middleware для инициализации базы данных
     public class DbInitializMiddleWare
     {
+        // Ссылка на следующий компонент
         private readonly RequestDelegate _next;
 
         public DbInitializMiddleWare(RequestDelegate next)
@@ -24,7 +23,7 @@ namespace CourseProject.MiddleWares
         }
     }
 
-    // Extension method used to add the middleware to the HTTP request pipeline.
+    // Метод расширения для добавления компонента middleware
     public static class DbInitializeExtensions
     {
         public static IApplicationBuilder UseInitializeMiddleware(this IApplicationBuilder builder)

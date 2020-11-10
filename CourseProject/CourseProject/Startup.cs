@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CourseProject.MiddleWares;
 using CourseProject.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,10 +19,24 @@ namespace CourseProject
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            // Добавление профилей кэширования для таблиц и остальных страниц
+            services.AddControllersWithViews(options => 
+            {
+                options.CacheProfiles.Add("TablesCaching",
+                    new CacheProfile()
+                    {
+                        Duration = 286
+                    });
+                options.CacheProfiles.Add("NoCaching",
+                    new CacheProfile()
+                    {
+                        Location = ResponseCacheLocation.None,
+                        NoStore = true
+                    });
+            });
+            // Добавление контекста данных со строкой подключения, хранящейся в файле appsettings.json
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
         }
 

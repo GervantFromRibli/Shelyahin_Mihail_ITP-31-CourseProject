@@ -2,6 +2,7 @@
 
 namespace CourseProject.Models
 {
+    // Модель, представляющая запись в таблице Мебель
     public class Furniture
     {
         [Key]
@@ -12,14 +13,5 @@ namespace CourseProject.Models
         public decimal Price { get; set; }
         public int Count { get; set; }
         public Furniture() { }
-        public Furniture(int id, string name, string descr, string material, decimal price, int count)
-        {
-            Id = id;
-            Name = name;
-            Description = descr;
-            Material = material;
-            Price = price;
-            Count = count;
-        }
     }
 }

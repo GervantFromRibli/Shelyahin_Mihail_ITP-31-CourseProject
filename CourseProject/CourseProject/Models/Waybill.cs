@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CourseProject.Models
 {
+    // Модель, представляющая запись в таблице Накладные
     public class Waybill
     {
         [Key]
@@ -16,17 +17,5 @@ namespace CourseProject.Models
         public int FurnitureId { get; set; }
         public int EmployeeId { get; set; }
         public Waybill() { }
-        public Waybill(int id, int providerId, string provName, DateTime date, string material, decimal price, double weight, int furnitId, int emplId)
-        {
-            Id = id;
-            ProviderId = providerId;
-            ProviderName = provName;
-            DateOfSupply = date;
-            Material = material;
-            Price = price;
-            Weight = weight;
-            FurnitureId = furnitId;
-            EmployeeId = emplId;
-        }
     }
 }

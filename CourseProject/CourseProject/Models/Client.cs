@@ -2,6 +2,7 @@
 
 namespace CourseProject.Models
 {
+    // Модель, представляющая запись в таблице Клиенты
     public class Client
     {
         [Key]

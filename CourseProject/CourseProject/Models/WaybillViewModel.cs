@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseProject.Models
 {
+    // Модель отображения записей из таблицы Накладные с заменой внешних ключей смысловыми данными
     public class WaybillViewModel
     {
         public int Id { get; set; }
