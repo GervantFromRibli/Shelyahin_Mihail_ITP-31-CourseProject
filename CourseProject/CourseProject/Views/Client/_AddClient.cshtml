@@ -1,0 +1,37 @@
+﻿@model ClientIndexViewModel
+<h3>
+    Добавление записи
+</h3>
+<hr />
+@using (Html.BeginForm("AddClient", "Client", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m => m.Name)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.RepresentativeFIO)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.RepresentativeFIO)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Number)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Number)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Address)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Address)
+        </div>
+    </div>
+    <div>
+        <div>
+            <input type="submit" class="btn btn-default" value="Добавить" />
+        </div>
+    </div>
+}

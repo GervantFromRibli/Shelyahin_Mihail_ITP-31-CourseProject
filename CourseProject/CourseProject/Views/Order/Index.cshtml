@@ -1,0 +1,116 @@
+﻿@model OrderIndexViewModel
+@{
+    ViewBag.Title = "Таблица заказов";
+}
+<script>
+    function changeAddVisibility() {
+        document.getElementById('DeleteOrder').style.display = "none";
+        document.getElementById('UpdateOrder').style.display = "none";
+        document.getElementById('AddOrder').style.display = "block";
+    }
+</script>
+<script>
+    function changeDeleteVisibility() {
+        document.getElementById('DeleteOrder').style.display = "block";
+        document.getElementById('UpdateOrder').style.display = "none";
+        document.getElementById('AddOrder').style.display = "none";
+    }
+</script>
+<script>
+    function changeUpdateVisibility() {
+        document.getElementById('DeleteOrder').style.display = "none";
+        document.getElementById('UpdateOrder').style.display = "block";
+        document.getElementById('AddOrder').style.display = "none";
+    }
+</script>
+
+<H1>@ViewBag.Title:</H1>
+<div>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>
+                    Id
+                </td>
+                <td>
+                    Название клиента
+                </td>
+                <td>
+                    Название мебели
+                </td>
+                <td>
+                    Кол-во мебели
+                </td>
+                <td>
+                    Цена
+                </td>
+                <td>
+                    Скидка
+                </td>
+                <td>
+                    Выполнен?
+                </td>
+                <td>
+                    ФИО сотрудника
+                </td>
+            </tr>
+        </thead>
+        @foreach (var elem in Model.OrderViewModels)
+        {
+            <tr>
+                <td>
+                    @elem.Id
+                </td>
+                <td>
+                    @elem.ClientName
+                </td>
+                <td>
+                    @elem.FurnitureName
+                </td>
+                <td>
+                    @elem.FurnitureCount
+                </td>
+                <td>
+                    @elem.Price
+                </td>
+                <td>
+                    @elem.DiscountPercent
+                    %
+                </td>
+                @if (elem.IsCompleted)
+                {
+                    <td>
+                        Да
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        Нет
+                    </td>
+                }
+                <td>
+                    @elem.EmployeeFIO
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div>
+    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
+</div>
+<hr />
+@ViewData["Message"]
+<div>
+    <div id="AddOrder" style="display:none;">
+        @{await Html.RenderPartialAsync("_AddOrder");}
+    </div>
+    <div id="DeleteOrder" style="display:none;">
+        @{await Html.RenderPartialAsync("_DeleteOrder");}
+    </div>
+    <div id="UpdateOrder" style="display:none;">
+        @{await Html.RenderPartialAsync("_UpdateOrder");}
+    </div>
+</div>

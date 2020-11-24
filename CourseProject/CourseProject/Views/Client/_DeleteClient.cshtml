@@ -1,0 +1,25 @@
+﻿@model ClientIndexViewModel
+<h3>
+    Удаление записи
+</h3>
+<hr />
+@using (Html.BeginForm("DeleteClient", "Client", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m => m.Id)
+        <div class="col-md-10">
+            <select name="Id">
+                @foreach (var id in Model.Ids)
+                {
+                    <option>@id</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        <div>
+            <input type="submit" class="btn btn-default" value="Удалить" />
+        </div>
+    </div>
+}
+

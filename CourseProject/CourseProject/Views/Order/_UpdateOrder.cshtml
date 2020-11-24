@@ -1,0 +1,81 @@
+﻿@model OrderIndexViewModel
+<h3>
+    Изменение записи
+</h3>
+@using (Html.BeginForm("UpdateOrder", "Order", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m => m.Id)
+        <div class="col-md-10">
+            <select name="Id">
+                @foreach (var id in Model.Ids)
+                {
+                    <option>@id</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.ClientName)
+        <div class="col-md-10">
+            <select name="ClientName">
+                @foreach (var name in Model.ClientNames)
+                {
+                    <option>@name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.EmployeeFIO)
+        <div class="col-md-10">
+            <select name="EmployeeFIO">
+                @foreach (var fio in Model.EmployeesFIOs)
+                {
+                    <option>@fio</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.FurnitureName)
+        <div class="col-md-10">
+            <select name="FurnitureName">
+                @foreach (var name in Model.FurnitureNames)
+                {
+                    <option>@name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.FurnitureCount)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FurnitureCount)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.DiscountPercent)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.DiscountPercent)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Price)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Price)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.IsCompleted)
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.IsCompleted)
+        </div>
+    </div>
+    <div>
+        <div>
+            <input type="submit" class="btn btn-default" value="Изменить" />
+        </div>
+    </div>
+}
+

@@ -1,0 +1,82 @@
+﻿@model EmployeeIndexViewModel
+@{
+    ViewBag.Title = "Таблица работников";
+}
+<script>
+    function changeAddVisibility() {
+        document.getElementById('DeleteEmployee').style.display = "none";
+        document.getElementById('UpdateEmployee').style.display = "none";
+        document.getElementById('AddEmployee').style.display = "block";
+    }
+</script>
+<script>
+    function changeDeleteVisibility() {
+        document.getElementById('DeleteEmployee').style.display = "block";
+        document.getElementById('UpdateEmployee').style.display = "none";
+        document.getElementById('AddEmployee').style.display = "none";
+    }
+</script>
+<script>
+    function changeUpdateVisibility() {
+        document.getElementById('DeleteEmployee').style.display = "none";
+        document.getElementById('UpdateEmployee').style.display = "block";
+        document.getElementById('AddEmployee').style.display = "none";
+    }
+</script>
+
+<H1>@ViewBag.Title:</H1>
+<div>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>
+                    Id
+                </td>
+                <td>
+                    ФИО
+                </td>
+                <td>
+                    Должность
+                </td>
+                <td>
+                    Образование
+                </td>
+            </tr>
+        </thead>
+        @foreach (var elem in Model.Employees)
+        {
+            <tr>
+                <td>
+                    @elem.Id
+                </td>
+                <td>
+                    @elem.FIO
+                </td>
+                <td>
+                    @elem.Position
+                </td>
+                <td>
+                    @elem.Education
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div>
+    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
+</div>
+<hr />
+@ViewData["Message"]
+<div>
+    <div id="AddEmployee" style="display:none;">
+        @{await Html.RenderPartialAsync("_AddEmployee");}
+    </div>
+    <div id="DeleteEmployee" style="display:none;">
+        @{await Html.RenderPartialAsync("_DeleteEmployee");}
+    </div>
+    <div id="UpdateEmployee" style="display:none;">
+        @{await Html.RenderPartialAsync("_UpdateEmployee");}
+    </div>
+</div>

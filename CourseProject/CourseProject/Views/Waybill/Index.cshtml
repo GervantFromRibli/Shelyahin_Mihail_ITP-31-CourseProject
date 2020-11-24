@@ -1,0 +1,112 @@
+﻿@model WaybillIndexViewModel
+@{
+    ViewBag.Title = "Таблица накладных";
+}
+<script>
+    function changeAddVisibility() {
+        document.getElementById('DeleteWaybill').style.display = "none";
+        document.getElementById('UpdateWaybill').style.display = "none";
+        document.getElementById('AddWaybill').style.display = "block";
+    }
+</script>
+<script>
+    function changeDeleteVisibility() {
+        document.getElementById('DeleteWaybill').style.display = "block";
+        document.getElementById('UpdateWaybill').style.display = "none";
+        document.getElementById('AddWaybill').style.display = "none";
+    }
+</script>
+<script>
+    function changeUpdateVisibility() {
+        document.getElementById('DeleteWaybill').style.display = "none";
+        document.getElementById('UpdateWaybill').style.display = "block";
+        document.getElementById('AddWaybill').style.display = "none";
+    }
+</script>
+
+<H1>@ViewBag.Title:</H1>
+<div>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>
+                    Id
+                </td>
+                <td>
+                    Номер поставщика
+                </td>
+                <td>
+                    Название поставщика
+                </td>
+                <td>
+                    Дата поставок
+                </td>
+                <td>
+                    Материал
+                </td>
+                <td>
+                    Стоимость
+                </td>
+                <td>
+                    Вес
+                </td>
+                <td>
+                    Название мебели
+                </td>
+                <td>
+                    ФИО сотрудника
+                </td>
+            </tr>
+        </thead>
+        @foreach (var elem in Model.WaybillViewModels)
+        {
+            <tr>
+                <td>
+                    @elem.Id
+                </td>
+                <td>
+                    @elem.ProviderId
+                </td>
+                <td>
+                    @elem.ProviderName
+                </td>
+                <td>
+                    @elem.DateOfSupply
+                </td>
+                <td>
+                    @elem.Material
+                </td>
+                <td>
+                    @elem.Price
+                </td>
+                <td>
+                    @elem.Weight
+                </td>
+                <td>
+                    @elem.FurnitureName
+                </td>
+                <td>
+                    @elem.EmployeeFIO
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div>
+    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
+</div>
+<hr />
+@ViewData["Message"]
+<div>
+    <div id="AddWaybill" style="display:none;">
+        @{await Html.RenderPartialAsync("_AddWaybill");}
+    </div>
+    <div id="DeleteWaybill" style="display:none;">
+        @{await Html.RenderPartialAsync("_DeleteWaybill");}
+    </div>
+    <div id="UpdateWaybill" style="display:none;">
+        @{await Html.RenderPartialAsync("_UpdateWaybill");}
+    </div>
+</div>

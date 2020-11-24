@@ -1,0 +1,43 @@
+﻿@model FurnitureIndexViewModel
+<h3>
+    Добавление записи
+</h3>
+<hr />
+@using (Html.BeginForm("AddFurniture", "Furniture", FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m => m.Name)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Description)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Description)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Material)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Material)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Price)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Price)
+        </div>
+    </div>
+    <div>
+        @Html.LabelFor(m => m.Count)
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Count)
+        </div>
+    </div>
+    <div>
+        <div>
+            <input type="submit" class="btn btn-default" value="Добавить" />
+        </div>
+    </div>
+}

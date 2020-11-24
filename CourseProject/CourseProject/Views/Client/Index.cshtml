@@ -1,0 +1,86 @@
+﻿@model ClientIndexViewModel
+@{
+    ViewBag.Title = "Таблица клиентов";
+}
+<script>
+    function changeAddVisibility() {
+        document.getElementById('DeleteClient').style.display = "none";
+        document.getElementById('UpdateClient').style.display = "none";
+        document.getElementById('AddClient').style.display = "block";
+    }
+</script>
+<script>
+    function changeDeleteVisibility() {
+        document.getElementById('DeleteClient').style.display = "block";
+        document.getElementById('UpdateClient').style.display = "none";
+        document.getElementById('AddClient').style.display = "none";
+    }
+</script>
+<script>
+    function changeUpdateVisibility() {
+        document.getElementById('DeleteClient').style.display = "none";
+        document.getElementById('UpdateClient').style.display = "block";
+        document.getElementById('AddClient').style.display = "none";
+    }
+</script>
+
+<H1>@ViewBag.Title:</H1>
+<table border="1">
+    <thead>
+        <tr>
+            <td>
+                Id
+            </td>
+            <td>
+                Название
+            </td>
+            <td>
+                ФИО представителя
+            </td>
+            <td>
+                Номер
+            </td>
+            <td>
+                Адрес
+            </td>
+        </tr>
+    </thead>
+    @foreach (var elem in Model.Clients)
+    {
+        <tr>
+            <td>
+                @elem.Id
+            </td>
+            <td>
+                @elem.Name
+            </td>
+            <td>
+                @elem.RepresentativeFIO
+            </td>
+            <td>
+                @elem.Number
+            </td>
+            <td>
+                @elem.Address
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()"/>
+    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()"/>
+</div>
+<hr />
+@ViewData["Message"]
+<div>
+    <div id="AddClient" style="display:none;">
+        @{await Html.RenderPartialAsync("_AddClient");}
+    </div>
+    <div id="DeleteClient" style="display:none;">
+        @{await Html.RenderPartialAsync("_DeleteClient");}
+    </div>
+    <div id="UpdateClient" style="display:none;">
+        @{await Html.RenderPartialAsync("_UpdateClient");}
+    </div>
+</div>
