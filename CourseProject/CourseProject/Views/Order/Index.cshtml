@@ -25,6 +25,31 @@
 </script>
 
 <H1>@ViewBag.Title:</H1>
+<form method="get">
+    <div>
+        <label class="control-label">Название клиента:&nbsp;</label>
+        <select name="clientName" class="form-control">
+            @foreach (var elem in Model.FilterClients)
+            {
+                <option>@elem</option>
+            }
+        </select>
+    </div>
+    <div>
+        <label class="control-label">Название мебели:&nbsp;</label>
+        <select name="furniture" class="form-control">
+            @foreach (var elem in Model.FilterFurnitures)
+            {
+                <option>@elem</option>
+            }
+        </select>
+    </div>
+    <br />
+    <div>
+        <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+<br />
 <div>
     <table border="1">
         <thead>
@@ -96,21 +121,44 @@
         }
     </table>
 </div>
-<div>
-    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
-    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
-    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
-</div>
-<hr />
-@ViewData["Message"]
-<div>
-    <div id="AddOrder" style="display:none;">
-        @{await Html.RenderPartialAsync("_AddOrder");}
+<br />
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}
+<br />
+@if (User.IsInRole("Администратор") || User.IsInRole("Работник фабрики"))
+{
+    <div>
+        <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+        <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+        <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
     </div>
-    <div id="DeleteOrder" style="display:none;">
-        @{await Html.RenderPartialAsync("_DeleteOrder");}
+    <hr />
+    @ViewData["Message"]
+    <div>
+        <div id="AddOrder" style="display:none;">
+            @{await Html.RenderPartialAsync("_AddOrder");}
+        </div>
+        <div id="DeleteOrder" style="display:none;">
+            @{await Html.RenderPartialAsync("_DeleteOrder");}
+        </div>
+        <div id="UpdateOrder" style="display:none;">
+            @{await Html.RenderPartialAsync("_UpdateOrder");}
+        </div>
     </div>
-    <div id="UpdateOrder" style="display:none;">
-        @{await Html.RenderPartialAsync("_UpdateOrder");}
-    </div>
-</div>
+}

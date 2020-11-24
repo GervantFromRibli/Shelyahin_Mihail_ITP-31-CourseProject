@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,12 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string providerName = null, string furnitName = "Все")
         {
-            return View(GetViewModel());
+            return View(GetViewModel(page, providerName, furnitName));
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult AddWaybill(WaybillIndexViewModel model)
         {
@@ -32,32 +34,32 @@ namespace CourseProject.Controllers
             if (model.ProviderName == null || model.Material == null || model.DateOfSupply == null)
             {
                 ViewData["Message"] += "Отсутствие значений в строках";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.ProviderId <= 0)
             {
                 ViewData["Message"] += "Неправильное значение номера поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Weight <= 0)
             {
                 ViewData["Message"] += "Неправильное значение веса";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.ProviderName.Length > 100)
             {
                 ViewData["Message"] += "Неправильный ввод названия поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Material.Length > 60)
             {
                 ViewData["Message"] += "Неправильный ввод материала";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else
             {
@@ -80,10 +82,11 @@ namespace CourseProject.Controllers
                     Weight = model.Weight
                 });
                 db.SaveChanges();
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult DeleteWaybill(WaybillIndexViewModel model)
         {
@@ -91,9 +94,10 @@ namespace CourseProject.Controllers
             var waybill = db.Waybills.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Waybills.Remove(waybill);
             db.SaveChanges();
-            return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+            return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult UpdateWaybill(WaybillIndexViewModel model)
         {
@@ -101,32 +105,32 @@ namespace CourseProject.Controllers
             if (model.ProviderName == null || model.Material == null || model.DateOfSupply == null)
             {
                 ViewData["Message"] += "Отсутствие значений в строках";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.ProviderId <= 0)
             {
                 ViewData["Message"] += "Неправильное значение номера поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Weight <= 0)
             {
                 ViewData["Message"] += "Неправильное значение веса";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.ProviderName.Length > 100)
             {
                 ViewData["Message"] += "Неправильный ввод названия поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else if (model.Material.Length > 60)
             {
                 ViewData["Message"] += "Неправильный ввод материала";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
             else
             {
@@ -140,12 +144,13 @@ namespace CourseProject.Controllers
                 waybill.Material = model.Material;
                 waybill.Weight = model.Weight;
                 db.SaveChanges();
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
             }
         }
 
-        private WaybillIndexViewModel GetViewModel()
+        private WaybillIndexViewModel GetViewModel(int page, string providerName = null, string furnitName = "Все")
         {
+            int pageSize = 20;
             List<int> Ids = db.Waybills.Select(item => item.Id).ToList();
             List<Waybill> waybills = db.Waybills.ToList();
             List<Employee> employees = db.Employees.ToList();
@@ -166,12 +171,27 @@ namespace CourseProject.Controllers
                     Weight = waybill.Weight
                 });
             }
+
+            List<string> furnitNames = furniture.Select(item => item.Name).ToList();
+            furnitNames.Add("Все");
+
+            if (providerName != null)
+            {
+                waybillViewModels = waybillViewModels.Where(item => item.ProviderName.Contains(providerName)).ToList();
+            }
+            if (furnitName != "Все")
+            {
+                waybillViewModels = waybillViewModels.Where(item => item.FurnitureName == furnitName).ToList();
+            }
+
             WaybillIndexViewModel waybillIndexViewModel = new WaybillIndexViewModel()
             {
-                WaybillViewModels = waybillViewModels,
+                WaybillViewModels = waybillViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
                 Ids = Ids,
                 EmployeesFIOs = employees.Select(item => item.FIO).ToList(),
-                FurnitureNames = furniture.Select(item => item.Name).ToList()
+                FurnitureNames = furniture.Select(item => item.Name).ToList(),
+                PageViewModel = new PageViewModel(waybillViewModels.Count, page, pageSize),
+                FilterFurnitureNames = furnitNames
             };
             return waybillIndexViewModel;
         }

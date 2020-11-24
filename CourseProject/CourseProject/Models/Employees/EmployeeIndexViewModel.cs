@@ -10,7 +10,15 @@ namespace CourseProject.Models
     {
         public List<Employee> Employees { get; set; }
 
+        public PageViewModel PageViewModel { get; set; }
+
         public List<int> Ids { get; set; }
+
+        public List<string> FilterPositions { get; set; }
+
+        public string FilterPosition { get; set; }
+
+        public string FilterEducation { get; set; }
 
         [Display(Name = "Id")]
         public int Id { get; set; }

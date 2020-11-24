@@ -25,6 +25,26 @@
 </script>
 
 <H1>@ViewBag.Title:</H1>
+<form method="get">
+    <div>
+        <label class="control-label">Стоимость:&nbsp;</label>
+        <input name="price" type="number" min="0" class="form-control" />
+    </div>
+    <div>
+        <label class="control-label">Материалы:&nbsp;</label>
+        <select name="material" class="form-control">
+            @foreach (var elem in Model.FilterMaterials)
+            {
+                <option>@elem</option>
+            }
+        </select>
+    </div>
+    <br />
+    <div>
+        <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
+<br />
 <div>
     <table border="1">
         <thead>
@@ -74,21 +94,44 @@
         }
     </table>
 </div>
-<div>
-    <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
-    <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
-    <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
-</div>
-<hr />
-@ViewData["Message"]
-<div>
-    <div id="AddFurniture" style="display:none;">
-        @{await Html.RenderPartialAsync("_AddFurniture");}
+<br />
+@if (Model.PageViewModel.HasPreviousPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageViewModel.HasNextPage)
+{
+    <a asp-action="Index"
+       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}
+<br />
+@if (User.IsInRole("Администратор") || User.IsInRole("Работник фабрики"))
+{
+    <div>
+        <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+        <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+        <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
     </div>
-    <div id="DeleteFurniture" style="display:none;">
-        @{await Html.RenderPartialAsync("_DeleteFurniture");}
+    <hr />
+    @ViewData["Message"]
+    <div>
+        <div id="AddFurniture" style="display:none;">
+            @{await Html.RenderPartialAsync("_AddFurniture");}
+        </div>
+        <div id="DeleteFurniture" style="display:none;">
+            @{await Html.RenderPartialAsync("_DeleteFurniture");}
+        </div>
+        <div id="UpdateFurniture" style="display:none;">
+            @{await Html.RenderPartialAsync("_UpdateFurniture");}
+        </div>
     </div>
-    <div id="UpdateFurniture" style="display:none;">
-        @{await Html.RenderPartialAsync("_UpdateFurniture");}
-    </div>
-</div>
+}

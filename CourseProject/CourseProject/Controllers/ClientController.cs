@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,20 +19,36 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string filterRepresFIO = "Все", string address = null)
         {
+            int pageSize = 20;
             List<Client> clients = db.Clients.ToList();
             List<int> Ids = clients.Select(item => item.Id).ToList();
+            var repFios = clients.Select(item => item.RepresentativeFIO).ToList();
+            repFios.Add("Все");
+
+            if (filterRepresFIO != "Все")
+            {
+                clients = clients.Where(item => item.RepresentativeFIO == filterRepresFIO).ToList();
+            }
+            
+            if (address != null)
+            {
+                clients = clients.Where(item => item.Address.Contains(address)).ToList();
+            }
 
             ClientIndexViewModel clientIndexViewModel = new ClientIndexViewModel()
             {
-                Clients = clients,
-                Ids = Ids
+                Clients = clients.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                Ids = Ids,
+                PageViewModel = new PageViewModel(clients.Count, page, pageSize),
+                FilterRepresFIOs = repFios
             };
 
             return View(clientIndexViewModel);
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult AddClient(ClientIndexViewModel model)
         {
@@ -80,6 +97,7 @@ namespace CourseProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult DeleteClient(ClientIndexViewModel model)
         {
@@ -92,6 +110,7 @@ namespace CourseProject.Controllers
             return View("~/Views/Client/Index.cshtml", model);
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult UpdateClient(ClientIndexViewModel model)
         {

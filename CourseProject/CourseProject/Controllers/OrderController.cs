@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,12 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string furniture = "Все", string clientName = "Все")
         {
-            return View(GetViewModel());
+            return View(GetViewModel(page, furniture, clientName));
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult AddOrder(OrderIndexViewModel model)
         {
@@ -32,17 +34,17 @@ namespace CourseProject.Controllers
             if (model.FurnitureCount <= 0)
             {
                 ViewData["Message"] += "Неправильное значение количества мебели";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else if (model.DiscountPercent < 0 || model.DiscountPercent > 99)
             {
                 ViewData["Message"] += "Неправильное значение скидки";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else
             {
@@ -64,10 +66,11 @@ namespace CourseProject.Controllers
                     FurnitureId = db.Furniture.Where(item => item.Name == model.FurnitureName).First().Id 
                 });
                 db.SaveChanges();
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult DeleteOrder(OrderIndexViewModel model)
         {
@@ -75,9 +78,10 @@ namespace CourseProject.Controllers
             var order = db.Orders.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Orders.Remove(order);
             db.SaveChanges();
-            return View("~/Views/Order/Index.cshtml", GetViewModel());
+            return View("~/Views/Order/Index.cshtml", GetViewModel(1));
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult UpdateOrder(OrderIndexViewModel model)
         {
@@ -85,17 +89,17 @@ namespace CourseProject.Controllers
             if (model.FurnitureCount <= 0)
             {
                 ViewData["Message"] += "Неправильное значение количества мебели";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else if (model.DiscountPercent < 0 || model.DiscountPercent > 99)
             {
                 ViewData["Message"] += "Неправильное значение скидки";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
             else
             {
@@ -108,12 +112,13 @@ namespace CourseProject.Controllers
                 order.FurnitureId = db.Furniture.Where(item => item.Name == model.FurnitureName).First().Id;
                 order.IsCompleted = model.IsCompleted ? 1 : 0;
                 db.SaveChanges();
-                return View("~/Views/Order/Index.cshtml", GetViewModel());
+                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
             }
         }
 
-        private OrderIndexViewModel GetViewModel()
+        private OrderIndexViewModel GetViewModel(int page, string furnitureName = "Все", string clientName = "Все")
         {
+            int pageSize = 20;
             List<int> Ids = db.Orders.Select(item => item.Id).ToList();
             List<Order> orders = db.Orders.ToList();
             List<Employee> employees = db.Employees.ToList();
@@ -134,13 +139,32 @@ namespace CourseProject.Controllers
                     Price = order.Price
                 });
             }
+
+            List<string> furnituresNames = furniture.Select(item => item.Name).ToList();
+            List<string> clientNames = clients.Select(item => item.Name).ToList();
+            furnituresNames.Add("Все");
+            clientNames.Add("Все");
+
+            if (furnitureName != "Все")
+            {
+                orderViewModels = orderViewModels.Where(item => item.FurnitureName == furnitureName).ToList();
+            }
+
+            if (clientName != "Все")
+            {
+                orderViewModels = orderViewModels.Where(item => item.ClientName == clientName).ToList();
+            }
+
             OrderIndexViewModel orderIndexViewModel = new OrderIndexViewModel()
             {
-                OrderViewModels = orderViewModels,
+                OrderViewModels = orderViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
                 Ids = Ids,
                 ClientNames = clients.Select(item => item.Name).ToList(),
                 EmployeesFIOs = employees.Select(item => item.FIO).ToList(),
-                FurnitureNames = furniture.Select(item => item.Name).ToList()
+                FurnitureNames = furniture.Select(item => item.Name).ToList(),
+                PageViewModel = new PageViewModel(orderViewModels.Count, page, pageSize),
+                FilterClients = clientNames,
+                FilterFurnitures = furnituresNames
             };
             return orderIndexViewModel;
         }

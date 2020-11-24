@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,20 +21,37 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string material = "Все", decimal price = 0)
         {
+            int pageSize = 20;
             List<Furniture> furniture = db.Furniture.ToList();
             List<int> Ids = furniture.Select(item => item.Id).ToList();
+            List<string> materials = furniture.Select(item => item.Material).ToList();
+
+            materials.Add("Все");
+
+            if (material != "Все")
+            {
+                furniture = furniture.Where(item => item.Material == material).ToList();
+            }
+
+            if (price != 0)
+            {
+                furniture = furniture.Where(item => item.Price == price).ToList();
+            }
 
             FurnitureIndexViewModel furnitureIndexViewModel = new FurnitureIndexViewModel()
             {
-                Furniture = furniture,
-                Ids = Ids
+                Furniture = furniture.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                Ids = Ids,
+                PageViewModel = new PageViewModel(furniture.Count, page, pageSize),
+                FilterMaterials = materials
             };
 
             return View(furnitureIndexViewModel);
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult AddFurniture(FurnitureIndexViewModel model)
         {
@@ -87,6 +105,7 @@ namespace CourseProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult DeleteFurniture(FurnitureIndexViewModel model)
         {
@@ -99,6 +118,7 @@ namespace CourseProject.Controllers
             return View("~/Views/Furniture/Index.cshtml", model);
         }
 
+        [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
         public IActionResult UpdateFurniture(FurnitureIndexViewModel model)
         {

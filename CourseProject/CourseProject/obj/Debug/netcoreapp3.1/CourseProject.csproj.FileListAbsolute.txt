@@ -168,3 +168,14 @@ D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\n
 D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.Internal.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Identity.Core.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Identity.Stores.dll
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\Account\Register.cshtml.g.cs
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_LoginPartial.cshtml.g.cs
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\Account\Login.cshtml.g.cs
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\UserManage\Index.cshtml.g.cs
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\UserManage\Create.cshtml.g.cs
+D:\Shelyahin_Mihail_ITP-31-CourseProject\CourseProject\CourseProject\obj\Debug\netcoreapp3.1\Razor\Views\UserManage\Edit.cshtml.g.cs

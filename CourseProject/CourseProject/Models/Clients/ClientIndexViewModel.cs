@@ -12,6 +12,14 @@ namespace CourseProject.Models
 
         public List<int> Ids { get; set; }
 
+        public PageViewModel PageViewModel { get; set; }
+
+        public List<string> FilterRepresFIOs { get; set; }
+
+        public string FilterRepresFIO { get; set; }
+
+        public string FilterAddress { get; set; }
+
         [Display(Name = "Id")]
         public int Id { get; set; }
 

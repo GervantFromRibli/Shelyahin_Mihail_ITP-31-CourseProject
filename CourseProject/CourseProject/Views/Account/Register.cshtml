@@ -1,0 +1,42 @@
+﻿@model CourseProject.Models.RegisterViewModel
+<h2>Регистрация нового пользователя</h2>
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="UserRole"></label><br />
+        <select asp-for="UserRole">
+            <option>Базовый пользователь</option>
+            <option>Работник фабрики</option>
+            <option>Администратор</option>
+        </select>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="FIO"></label><br />
+        <input asp-for="FIO" />
+        <span asp-validation-for="FIO"></span>
+    </div>
+    <div>
+        <label asp-for="Age"></label><br />
+        <input asp-for="Age" />
+        <span asp-validation-for="Age"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="PasswordConfirm"></label><br />
+        <input asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>
+    <hr />
+    <div>
+        <input type="submit" value="Регистрация" />
+    </div>
+</form>

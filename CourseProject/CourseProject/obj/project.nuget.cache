@@ -1,16 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "PcOg44O1aHSjPi0JfeNW+JuVaR9IDnDEPWHJvtER017JSefFW1eClcIG0k5iABt6ou7SDmdxqsVBM5wA8W3Qqg==",
+  "dgSpecHash": "rZ/9+h9fcaeEGOjAypbqRMbDMHJyCyCzYucUXkCYvGO11IMaKHAnVztcxzawQuqulyWi2Dqj4SgNblTCH9K17w==",
   "success": true,
   "projectFilePath": "D:\\Shelyahin_Mihail_ITP-31-CourseProject\\CourseProject\\CourseProject\\CourseProject.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\bootstrap\\3.1.1\\bootstrap.3.1.1.nupkg.sha512",
-    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\bootstrap.datepicker\\1.3.0\\bootstrap.datepicker.1.3.0.nupkg.sha512",
-    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\datepicker.htmlhelper\\1.2.2.1\\datepicker.htmlhelper.1.2.2.1.nupkg.sha512",
-    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\helpermethods.htmlhelper\\1.0.0\\helpermethods.htmlhelper.1.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
-    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\jquery\\1.9.0\\jquery.1.9.0.nupkg.sha512",
+    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.0\\microsoft.aspnetcore.cryptography.internal.5.0.0.nupkg.sha512",
+    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.0\\microsoft.aspnetcore.cryptography.keyderivation.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\5.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.razor\\2.2.0\\microsoft.aspnetcore.razor.2.2.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\3.1.0\\microsoft.aspnetcore.razor.language.3.1.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.aspnetcore.razor.runtime\\2.2.0\\microsoft.aspnetcore.razor.runtime.2.2.0.nupkg.sha512",
@@ -35,6 +33,8 @@
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\5.0.0\\microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\5.0.0\\microsoft.extensions.dependencyinjection.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0\\microsoft.extensions.dependencyinjection.abstractions.5.0.0.nupkg.sha512",
+    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.identity.core\\5.0.0\\microsoft.extensions.identity.core.5.0.0.nupkg.sha512",
+    "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.identity.stores\\5.0.0\\microsoft.extensions.identity.stores.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.logging\\5.0.0\\microsoft.extensions.logging.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\5.0.0\\microsoft.extensions.logging.abstractions.5.0.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\microsoft.extensions.options\\5.0.0\\microsoft.extensions.options.5.0.0.nupkg.sha512",
@@ -167,16 +167,5 @@
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Users\\Гервант Из Рыбли\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1602",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "DatePicker.HTMLHelper 1.2.2.1 не задает включенную нижнюю границу для зависимости HelperMethods.HTMLHelper. Использовано наилучшее приближенное соответствие HelperMethods.HTMLHelper 1.0.0.",
-      "libraryId": "HelperMethods.HTMLHelper",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v3.1"
-      ]
-    }
-  ]
+  "logs": []
 }

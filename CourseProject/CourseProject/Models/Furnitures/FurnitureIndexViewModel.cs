@@ -10,6 +10,14 @@ namespace CourseProject.Models
     {
         public List<Furniture> Furniture { get; set; }
 
+        public PageViewModel PageViewModel { get; set; }
+
+        public List<string> FilterMaterials { get; set; }
+
+        public string FilterMaterial { get; set; }
+
+        public decimal FilterPrice { get; set; }
+
         public List<int> Ids { get; set; }
 
         [Display(Name = "Id")]

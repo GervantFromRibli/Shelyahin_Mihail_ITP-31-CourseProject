@@ -1,4 +1,5 @@
 ﻿using CourseProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,20 +21,37 @@ namespace CourseProject.Controllers
         // Метод получения страницы работников.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 1, string position = "Все", string education = null)
         {
+            int pageSize = 20;
             List<Employee> employees = db.Employees.ToList();
             List<int> Ids = employees.Select(item => item.Id).ToList();
+            List<string> positions = employees.Select(item => item.Position).ToList();
+            positions.Add("Все");
+
+            if (position != "Все")
+            {
+                employees = employees.Where(item => item.Position == position).ToList();
+            }
+
+            if (education != null)
+            {
+                employees = employees.Where(item => item.Education.Contains(education)).ToList();
+            }
+
 
             EmployeeIndexViewModel employeeIndexViewModel = new EmployeeIndexViewModel()
             {
-                Employees = employees,
-                Ids = Ids
+                Employees = employees.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                Ids = Ids,
+                PageViewModel = new PageViewModel(employees.Count, page, pageSize),
+                FilterPositions = positions
             };
 
             return View(employeeIndexViewModel);
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult AddEmployee(EmployeeIndexViewModel model)
         {
@@ -77,6 +95,7 @@ namespace CourseProject.Controllers
             }
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult DeleteEmployee(EmployeeIndexViewModel model)
         {
@@ -89,6 +108,7 @@ namespace CourseProject.Controllers
             return View("~/Views/Employee/Index.cshtml", model);
         }
 
+        [Authorize(Roles = "Администратор")]
         [HttpPost]
         public IActionResult UpdateEmployee(EmployeeIndexViewModel model)
         {

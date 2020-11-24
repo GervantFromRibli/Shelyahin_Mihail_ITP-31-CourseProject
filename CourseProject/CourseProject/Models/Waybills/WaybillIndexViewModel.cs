@@ -14,6 +14,14 @@ namespace CourseProject.Models
 
         public List<string> FurnitureNames { get; set; }
 
+        public PageViewModel PageViewModel { get; set; }
+
+        public List<string> FilterFurnitureNames { get; set; }
+
+        public string FilterFurnitName { get; set; }
+
+        public string FilterProviderName { get; set; }
+
         public List<int> Ids { get; set; }
 
         [Display(Name = "Id")]
