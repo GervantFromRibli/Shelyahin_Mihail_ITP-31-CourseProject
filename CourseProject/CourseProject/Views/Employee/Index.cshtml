@@ -8,118 +8,124 @@
         document.getElementById('UpdateEmployee').style.display = "none";
         document.getElementById('AddEmployee').style.display = "block";
     }
-</script>
-<script>
     function changeDeleteVisibility() {
         document.getElementById('DeleteEmployee').style.display = "block";
         document.getElementById('UpdateEmployee').style.display = "none";
         document.getElementById('AddEmployee').style.display = "none";
     }
-</script>
-<script>
     function changeUpdateVisibility() {
         document.getElementById('DeleteEmployee').style.display = "none";
         document.getElementById('UpdateEmployee').style.display = "block";
         document.getElementById('AddEmployee').style.display = "none";
     }
+    function SetSession() {
+        sessionStorage.setItem("education", $("#value1").val());
+        sessionStorage.setItem("position", $("#value2 option:selected").val());
+    }
+    function GetSession() {
+        $("#value1").val(sessionStorage.getItem("education"));
+        $("#value2").val(sessionStorage.getItem("position"));
+    }
 </script>
 
-<H1>@ViewBag.Title:</H1>
-<form method="get">
-    <div>
-        <label class="control-label">Образование:&nbsp;</label>
-        <input name="education" class="form-control" />
-    </div>
-    <div>
-        <label class="control-label">Должностm:&nbsp;</label>
-        <select name="position" class="form-control">
-            @foreach (var elem in Model.FilterPositions)
-            {
-                <option>@elem</option>
-            }
-        </select>
-    </div>
+<body onbeforeunload="SetSession()" onload="GetSession()">
+    <H1>@ViewBag.Title:</H1>
+    <form method="get">
+        <div>
+            <label class="control-label">Образование:&nbsp;</label>
+            <input name="education" id="value1" class="form-control" />
+        </div>
+        <div>
+            <label class="control-label">Должностm:&nbsp;</label>
+            <select name="position" id="value2" class="form-control">
+                @foreach (var elem in Model.FilterPositions)
+                {
+                    <option>@elem</option>
+                }
+            </select>
+        </div>
+        <br />
+        <div>
+            <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+        </div>
+    </form>
     <br />
     <div>
-        <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+        <table border="1">
+            <thead>
+                <tr>
+                    <td>
+                        Id
+                    </td>
+                    <td>
+                        ФИО
+                    </td>
+                    <td>
+                        Должность
+                    </td>
+                    <td>
+                        Образование
+                    </td>
+                </tr>
+            </thead>
+            @foreach (var elem in Model.Employees)
+            {
+                <tr>
+                    <td>
+                        @elem.Id
+                    </td>
+                    <td>
+                        @elem.FIO
+                    </td>
+                    <td>
+                        @elem.Position
+                    </td>
+                    <td>
+                        @elem.Education
+                    </td>
+                </tr>
+            }
+        </table>
     </div>
-</form>
-<br />
-<div>
-    <table border="1">
-        <thead>
-            <tr>
-                <td>
-                    Id
-                </td>
-                <td>
-                    ФИО
-                </td>
-                <td>
-                    Должность
-                </td>
-                <td>
-                    Образование
-                </td>
-            </tr>
-        </thead>
-        @foreach (var elem in Model.Employees)
-        {
-            <tr>
-                <td>
-                    @elem.Id
-                </td>
-                <td>
-                    @elem.FIO
-                </td>
-                <td>
-                    @elem.Position
-                </td>
-                <td>
-                    @elem.Education
-                </td>
-            </tr>
-        }
-    </table>
-</div>
-<br />
-@if (Model.PageViewModel.HasPreviousPage)
-{
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-       class="btn btn-outline-dark">
-        <i class="glyphicon glyphicon-chevron-left"></i>
-        Назад
-    </a>
-}
-@if (Model.PageViewModel.HasNextPage)
-{
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-       class="btn btn-outline-dark">
-        Вперед
-        <i class="glyphicon glyphicon-chevron-right"></i>
-    </a>
-}
-<br />
-@if (User.IsInRole("Администратор"))
-{
-    <div>
-        <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
-        <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
-        <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
-    </div>
-    <hr />
-    @ViewData["Message"]
-    <div>
-        <div id="AddEmployee" style="display:none;">
-            @{await Html.RenderPartialAsync("_AddEmployee");}
+    <br />
+    @if (Model.PageViewModel.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           class="btn btn-outline-dark">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Назад
+        </a>
+    }
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           class="btn btn-outline-dark">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </a>
+    }
+    <br />
+    @if (User.IsInRole("Администратор"))
+    {
+        <div>
+            <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
+            <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
+            <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
         </div>
-        <div id="DeleteEmployee" style="display:none;">
-            @{await Html.RenderPartialAsync("_DeleteEmployee");}
+        <hr />
+        @ViewData["Message"]
+        <div>
+            <div id="AddEmployee" style="display:none;">
+                @{await Html.RenderPartialAsync("_AddEmployee");}
+            </div>
+            <div id="DeleteEmployee" style="display:none;">
+                @{await Html.RenderPartialAsync("_DeleteEmployee");}
+            </div>
+            <div id="UpdateEmployee" style="display:none;">
+                @{await Html.RenderPartialAsync("_UpdateEmployee");}
+            </div>
         </div>
-        <div id="UpdateEmployee" style="display:none;">
-            @{await Html.RenderPartialAsync("_UpdateEmployee");}
-        </div>
-    </div>
-}
+    }
+</body>

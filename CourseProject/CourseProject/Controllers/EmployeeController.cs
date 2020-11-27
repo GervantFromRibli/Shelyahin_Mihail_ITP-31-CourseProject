@@ -1,10 +1,10 @@
 ﻿using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseProject.Controllers
 {
@@ -12,10 +12,12 @@ namespace CourseProject.Controllers
     {
         // Объект контекста данных
         private readonly ApplicationContext db;
+        private IMemoryCache cache;
 
-        public EmployeeController(ApplicationContext applicationContext)
+        public EmployeeController(ApplicationContext applicationContext, IMemoryCache cache)
         {
             db = applicationContext;
+            this.cache = cache;
         }
 
         // Метод получения страницы работников.
@@ -24,7 +26,12 @@ namespace CourseProject.Controllers
         public IActionResult Index(int page = 1, string position = "Все", string education = null)
         {
             int pageSize = 20;
-            List<Employee> employees = db.Employees.ToList();
+            List<Employee> employees;
+            if (!cache.TryGetValue("Employees", out employees))
+            {
+                employees = db.Employees.ToList();
+                cache.Set("Employees", db.Employees.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            }
             List<int> Ids = employees.Select(item => item.Id).ToList();
             List<string> positions = employees.Select(item => item.Position).ToList();
             positions.Add("Все");
@@ -89,9 +96,9 @@ namespace CourseProject.Controllers
                 id++;
                 db.Employees.Add(new Employee() { Id = id, FIO = model.FIO, Position = model.Position, Education = model.Education });
                 db.SaveChanges();
-                model.Employees = db.Employees.ToList();
-                model.Ids = db.Employees.Select(item => item.Id).ToList();
-                return View("~/Views/Employee/Index.cshtml", model);
+                cache.Remove("Employees");
+                cache.Set("Employees", db.Employees.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Employee");
             }
         }
 
@@ -103,9 +110,9 @@ namespace CourseProject.Controllers
             var employee = db.Employees.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Employees.Remove(employee);
             db.SaveChanges();
-            model.Employees = db.Employees.ToList();
-            model.Ids = db.Employees.Select(item => item.Id).ToList();
-            return View("~/Views/Employee/Index.cshtml", model);
+            cache.Remove("Employees");
+            cache.Set("Employees", db.Employees.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            return RedirectToAction("Index", "Employee");
         }
 
         [Authorize(Roles = "Администратор")]
@@ -143,7 +150,9 @@ namespace CourseProject.Controllers
                 employee.Position = model.Position;
                 employee.Education = model.Education;
                 db.SaveChanges();
-                return View("~/Views/Employee/Index.cshtml", model);
+                cache.Remove("Employees");
+                cache.Set("Employees", db.Employees.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Employee");
             }
         }
     }

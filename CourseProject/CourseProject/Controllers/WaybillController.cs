@@ -1,10 +1,10 @@
 ﻿using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseProject.Controllers
 {
@@ -12,10 +12,12 @@ namespace CourseProject.Controllers
     {
         // Объект контекста данных
         private readonly ApplicationContext db;
+        private IMemoryCache cache;
 
-        public WaybillController(ApplicationContext applicationContext)
+        public WaybillController(ApplicationContext applicationContext, IMemoryCache cache)
         {
             db = applicationContext;
+            this.cache = cache;
         }
 
         // Метод получения страницы клиентов.
@@ -34,32 +36,32 @@ namespace CourseProject.Controllers
             if (model.ProviderName == null || model.Material == null || model.DateOfSupply == null)
             {
                 ViewData["Message"] += "Отсутствие значений в строках";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.ProviderId <= 0)
             {
                 ViewData["Message"] += "Неправильное значение номера поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Weight <= 0)
             {
                 ViewData["Message"] += "Неправильное значение веса";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.ProviderName.Length > 100)
             {
                 ViewData["Message"] += "Неправильный ввод названия поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Material.Length > 60)
             {
                 ViewData["Message"] += "Неправильный ввод материала";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else
             {
@@ -82,7 +84,8 @@ namespace CourseProject.Controllers
                     Weight = model.Weight
                 });
                 db.SaveChanges();
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                cache.Remove("Waybills");
+                return RedirectToAction("Index", "Waybill");
             }
         }
 
@@ -94,7 +97,8 @@ namespace CourseProject.Controllers
             var waybill = db.Waybills.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Waybills.Remove(waybill);
             db.SaveChanges();
-            return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+            cache.Remove("Waybills");
+            return RedirectToAction("Index", "Waybill");
         }
 
         [Authorize(Roles = "Администратор")]
@@ -105,32 +109,32 @@ namespace CourseProject.Controllers
             if (model.ProviderName == null || model.Material == null || model.DateOfSupply == null)
             {
                 ViewData["Message"] += "Отсутствие значений в строках";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.ProviderId <= 0)
             {
                 ViewData["Message"] += "Неправильное значение номера поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Weight <= 0)
             {
                 ViewData["Message"] += "Неправильное значение веса";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.ProviderName.Length > 100)
             {
                 ViewData["Message"] += "Неправильный ввод названия поставщика";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else if (model.Material.Length > 60)
             {
                 ViewData["Message"] += "Неправильный ввод материала";
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Waybill/Index.cshtml", GetViewModel());
             }
             else
             {
@@ -144,34 +148,39 @@ namespace CourseProject.Controllers
                 waybill.Material = model.Material;
                 waybill.Weight = model.Weight;
                 db.SaveChanges();
-                return View("~/Views/Waybill/Index.cshtml", GetViewModel(1));
+                cache.Remove("Waybills");
+                return RedirectToAction("Index", "Waybill");
             }
         }
 
-        private WaybillIndexViewModel GetViewModel(int page, string providerName = null, string furnitName = "Все")
+        private WaybillIndexViewModel GetViewModel(int page = 1, string providerName = null, string furnitName = "Все")
         {
             int pageSize = 20;
-            List<int> Ids = db.Waybills.Select(item => item.Id).ToList();
-            List<Waybill> waybills = db.Waybills.ToList();
             List<Employee> employees = db.Employees.ToList();
             List<Furniture> furniture = db.Furniture.ToList();
-            List<WaybillViewModel> waybillViewModels = new List<WaybillViewModel>();
-            foreach (var waybill in waybills)
+            List<WaybillViewModel> waybillViewModels;
+            if (!cache.TryGetValue("Waybills", out waybillViewModels))
             {
-                waybillViewModels.Add(new WaybillViewModel()
+                List<Waybill> waybills = db.Waybills.ToList();
+                waybillViewModels = new List<WaybillViewModel>();
+                foreach (var waybill in waybills)
                 {
-                    Id = waybill.Id,
-                    ProviderId = waybill.ProviderId,
-                    ProviderName = waybill.ProviderName,
-                    EmployeeFIO = employees.Where(item => item.Id == waybill.EmployeeId).First().FIO,
-                    DateOfSupply = waybill.DateOfSupply,
-                    FurnitureName = furniture.Where(item => item.Id == waybill.FurnitureId).First().Name,
-                    Material = waybill.Material,
-                    Price = waybill.Price,
-                    Weight = waybill.Weight
-                });
+                    waybillViewModels.Add(new WaybillViewModel()
+                    {
+                        Id = waybill.Id,
+                        ProviderId = waybill.ProviderId,
+                        ProviderName = waybill.ProviderName,
+                        EmployeeFIO = employees.Where(item => item.Id == waybill.EmployeeId).First().FIO,
+                        DateOfSupply = waybill.DateOfSupply,
+                        FurnitureName = furniture.Where(item => item.Id == waybill.FurnitureId).First().Name,
+                        Material = waybill.Material,
+                        Price = waybill.Price,
+                        Weight = waybill.Weight
+                    });
+                }
+                cache.Set("Waybills", db.Waybills.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
             }
-
+            List<int> Ids = waybillViewModels.Select(item => item.Id).ToList();
             List<string> furnitNames = furniture.Select(item => item.Name).ToList();
             furnitNames.Add("Все");
 

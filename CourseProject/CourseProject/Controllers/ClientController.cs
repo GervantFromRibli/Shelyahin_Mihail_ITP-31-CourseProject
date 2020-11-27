@@ -1,6 +1,8 @@
 ﻿using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +12,12 @@ namespace CourseProject.Controllers
     {
         // Объект контекста данных
         private readonly ApplicationContext db;
+        private IMemoryCache cache;
 
-        public ClientController(ApplicationContext applicationContext)
+        public ClientController(ApplicationContext applicationContext, IMemoryCache cache)
         {
             db = applicationContext;
+            this.cache = cache;
         }
 
         // Метод получения страницы клиентов.
@@ -22,7 +26,12 @@ namespace CourseProject.Controllers
         public IActionResult Index(int page = 1, string filterRepresFIO = "Все", string address = null)
         {
             int pageSize = 20;
-            List<Client> clients = db.Clients.ToList();
+            List<Client> clients;
+            if (!cache.TryGetValue("Clients", out clients))
+            {
+                clients = db.Clients.ToList();
+                cache.Set("Clients", db.Clients.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            }
             List<int> Ids = clients.Select(item => item.Id).ToList();
             var repFios = clients.Select(item => item.RepresentativeFIO).ToList();
             repFios.Add("Все");
@@ -91,9 +100,9 @@ namespace CourseProject.Controllers
                 id++;
                 db.Clients.Add(new Client() { Id = id, Name = model.Name, Address = model.Address, Number = model.Number, RepresentativeFIO = model.RepresentativeFIO });
                 db.SaveChanges();
-                model.Clients = db.Clients.ToList();
-                model.Ids = db.Clients.Select(item => item.Id).ToList();
-                return View("~/Views/Client/Index.cshtml", model);
+                cache.Remove("Clients");
+                cache.Set("Clients", db.Clients.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Client");
             }
         }
 
@@ -105,9 +114,9 @@ namespace CourseProject.Controllers
             var client = db.Clients.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Clients.Remove(client);
             db.SaveChanges();
-            model.Clients = db.Clients.ToList();
-            model.Ids = db.Clients.Select(item => item.Id).ToList();
-            return View("~/Views/Client/Index.cshtml", model);
+            cache.Remove("Clients");
+            cache.Set("Clients", db.Clients.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            return RedirectToAction("Index", "Client");
         }
 
         [Authorize(Roles = "Администратор")]
@@ -151,7 +160,9 @@ namespace CourseProject.Controllers
                 client.Number = model.Number;
                 client.Address = model.Address;
                 db.SaveChanges();
-                return View("~/Views/Client/Index.cshtml", model);
+                cache.Remove("Clients");
+                cache.Set("Clients", db.Clients.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Client");
             }
         }
     }

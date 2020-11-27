@@ -1,10 +1,10 @@
 ﻿using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseProject.Controllers
 {
@@ -12,10 +12,12 @@ namespace CourseProject.Controllers
     {
         // Объект контекста данных
         private readonly ApplicationContext db;
+        private IMemoryCache cache;
 
-        public OrderController(ApplicationContext applicationContext)
+        public OrderController(ApplicationContext applicationContext, IMemoryCache cache)
         {
             db = applicationContext;
+            this.cache = cache;
         }
 
         // Метод получения страницы клиентов.
@@ -34,17 +36,17 @@ namespace CourseProject.Controllers
             if (model.FurnitureCount <= 0)
             {
                 ViewData["Message"] += "Неправильное значение количества мебели";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else if (model.DiscountPercent < 0 || model.DiscountPercent > 99)
             {
                 ViewData["Message"] += "Неправильное значение скидки";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else
             {
@@ -66,7 +68,8 @@ namespace CourseProject.Controllers
                     FurnitureId = db.Furniture.Where(item => item.Name == model.FurnitureName).First().Id 
                 });
                 db.SaveChanges();
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                cache.Remove("Orders");
+                return RedirectToAction("Index", "Order");
             }
         }
 
@@ -78,7 +81,8 @@ namespace CourseProject.Controllers
             var order = db.Orders.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Orders.Remove(order);
             db.SaveChanges();
-            return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+            cache.Remove("Orders");
+            return RedirectToAction("Index", "Order");
         }
 
         [Authorize(Roles = "Администратор, Работник фабрики")]
@@ -89,17 +93,17 @@ namespace CourseProject.Controllers
             if (model.FurnitureCount <= 0)
             {
                 ViewData["Message"] += "Неправильное значение количества мебели";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else if (model.DiscountPercent < 0 || model.DiscountPercent > 99)
             {
                 ViewData["Message"] += "Неправильное значение скидки";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else if (model.Price <= 0)
             {
                 ViewData["Message"] += "Неправильное значение стоимости";
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                return View("~/Views/Order/Index.cshtml", GetViewModel());
             }
             else
             {
@@ -112,34 +116,39 @@ namespace CourseProject.Controllers
                 order.FurnitureId = db.Furniture.Where(item => item.Name == model.FurnitureName).First().Id;
                 order.IsCompleted = model.IsCompleted ? 1 : 0;
                 db.SaveChanges();
-                return View("~/Views/Order/Index.cshtml", GetViewModel(1));
+                cache.Remove("Orders");
+                return RedirectToAction("Index", "Order");
             }
         }
 
-        private OrderIndexViewModel GetViewModel(int page, string furnitureName = "Все", string clientName = "Все")
+        private OrderIndexViewModel GetViewModel(int page = 1, string furnitureName = "Все", string clientName = "Все")
         {
             int pageSize = 20;
-            List<int> Ids = db.Orders.Select(item => item.Id).ToList();
-            List<Order> orders = db.Orders.ToList();
             List<Employee> employees = db.Employees.ToList();
             List<Furniture> furniture = db.Furniture.ToList();
             List<Client> clients = db.Clients.ToList();
-            List<OrderViewModel> orderViewModels = new List<OrderViewModel>();
-            foreach (var order in orders)
+            List<OrderViewModel> orderViewModels;
+            if (!cache.TryGetValue("Orders", out orderViewModels))
             {
-                orderViewModels.Add(new OrderViewModel()
+                List<Order> orders = db.Orders.ToList();
+                orderViewModels = new List<OrderViewModel>();
+                foreach (var order in orders)
                 {
-                    Id = order.Id,
-                    ClientName = clients.Where(item => item.Id == order.ClientId).First().Name,
-                    DiscountPercent = order.DiscountPercent,
-                    EmployeeFIO = employees.Where(item => item.Id == order.EmployeeId).First().FIO,
-                    FurnitureCount = order.FurnitureCount,
-                    FurnitureName = furniture.Where(item => item.Id == order.FurnitureId).First().Name,
-                    IsCompleted = order.IsCompleted == 0 ? false : true,
-                    Price = order.Price
-                });
+                    orderViewModels.Add(new OrderViewModel()
+                    {
+                        Id = order.Id,
+                        ClientName = clients.Where(item => item.Id == order.ClientId).First().Name,
+                        DiscountPercent = order.DiscountPercent,
+                        EmployeeFIO = employees.Where(item => item.Id == order.EmployeeId).First().FIO,
+                        FurnitureCount = order.FurnitureCount,
+                        FurnitureName = furniture.Where(item => item.Id == order.FurnitureId).First().Name,
+                        IsCompleted = order.IsCompleted != 0,
+                        Price = order.Price
+                    });
+                }
+                cache.Set("Orders", db.Orders.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
             }
-
+            List<int> Ids = orderViewModels.Select(item => item.Id).ToList();
             List<string> furnituresNames = furniture.Select(item => item.Name).ToList();
             List<string> clientNames = clients.Select(item => item.Name).ToList();
             furnituresNames.Add("Все");

@@ -8,122 +8,128 @@
         document.getElementById('UpdateClient').style.display = "none";
         document.getElementById('AddClient').style.display = "block";
     }
-</script>
-<script>
-    function changeDeleteVisibility() {
-        document.getElementById('DeleteClient').style.display = "block";
-        document.getElementById('UpdateClient').style.display = "none";
-        document.getElementById('AddClient').style.display = "none";
-    }
-</script>
-<script>
     function changeUpdateVisibility() {
         document.getElementById('DeleteClient').style.display = "none";
         document.getElementById('UpdateClient').style.display = "block";
         document.getElementById('AddClient').style.display = "none";
     }
+    function changeDeleteVisibility() {
+        document.getElementById('DeleteClient').style.display = "block";
+        document.getElementById('UpdateClient').style.display = "none";
+        document.getElementById('AddClient').style.display = "none";
+    }
+    function SetSession() {
+        sessionStorage.setItem("address", $("#value1").val());
+        sessionStorage.setItem("filterRepresFIO", $("#value2 option:selected").val());
+    }
+    function GetSession() {
+        $("#value1").val(sessionStorage.getItem("address"));
+        $("#value2").val(sessionStorage.getItem("filterRepresFIO"));
+    }
 </script>
 
 <H1>@ViewBag.Title:</H1>
-<form method="get">
-    <div>
-        <label class="control-label">Адрес:&nbsp;</label>
-        <input name="address" class="form-control" />
-    </div>
-    <div>
-        <label class="control-label">ФИО представителя:&nbsp;</label>
-        <select name="filterRepresFIO" class="form-control">
-            @foreach (var elem in Model.FilterRepresFIOs)
-            {
-                <option>@elem</option>
-            }
-        </select>
-    </div>
+<body onbeforeunload="SetSession()" onload="GetSession()">
+    <form method="get">
+        <div>
+            <label class="control-label">Адрес:&nbsp;</label>
+            <input name="address" id="value1" class="form-control" />
+        </div>
+        <div>
+            <label class="control-label">ФИО представителя:&nbsp;</label>
+            <select name="filterRepresFIO" id="value2" class="form-control">
+                @foreach (var elem in Model.FilterRepresFIOs)
+                {
+                    <option>@elem</option>
+                }
+            </select>
+        </div>
+        <br />
+        <div>
+            <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+        </div>
+    </form>
     <br />
-    <div>
-        <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
-    </div>
-</form>
-<br />
-<table border="1">
-    <thead>
-        <tr>
-            <td>
-                Id
-            </td>
-            <td>
-                Название
-            </td>
-            <td>
-                ФИО представителя
-            </td>
-            <td>
-                Номер
-            </td>
-            <td>
-                Адрес
-            </td>
-        </tr>
-    </thead>
-    @foreach (var elem in Model.Clients)
+    <table border="1">
+        <thead>
+            <tr>
+                <td>
+                    Id
+                </td>
+                <td>
+                    Название
+                </td>
+                <td>
+                    ФИО представителя
+                </td>
+                <td>
+                    Номер
+                </td>
+                <td>
+                    Адрес
+                </td>
+            </tr>
+        </thead>
+        @foreach (var elem in Model.Clients)
+        {
+            <tr>
+                <td>
+                    @elem.Id
+                </td>
+                <td>
+                    @elem.Name
+                </td>
+                <td>
+                    @elem.RepresentativeFIO
+                </td>
+                <td>
+                    @elem.Number
+                </td>
+                <td>
+                    @elem.Address
+                </td>
+            </tr>
+        }
+    </table>
+    <br />
+    @if (Model.PageViewModel.HasPreviousPage)
     {
-        <tr>
-            <td>
-                @elem.Id
-            </td>
-            <td>
-                @elem.Name
-            </td>
-            <td>
-                @elem.RepresentativeFIO
-            </td>
-            <td>
-                @elem.Number
-            </td>
-            <td>
-                @elem.Address
-            </td>
-        </tr>
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           class="btn btn-outline-dark" style="border-color:black;">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Назад
+        </a>
     }
-</table>
-<br />
-@if (Model.PageViewModel.HasPreviousPage)
-{
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-       class="btn btn-outline-dark" style="border-color:black;">
-        <i class="glyphicon glyphicon-chevron-left"></i>
-        Назад
-    </a>
-}
-@if (Model.PageViewModel.HasNextPage)
-{
-    <a asp-action="Index"
-       asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-       class="btn btn-outline-dark" style="border-color:black;">
-        Вперед
-        <i class="glyphicon glyphicon-chevron-right"></i>
-    </a>
-}
-<br />
-@if (User.IsInRole("Администратор"))
-{
-    <div>
-        <input type="submit" style="border-color:black;" value="Добавить запись" onclick="changeAddVisibility()" />
-        <input type="submit" style="border-color:black;" value="Удалить запись" onclick="changeDeleteVisibility()" />
-        <input type="submit" style="border-color:black;" value="Изменить запись" onclick="changeUpdateVisibility()" />
-    </div>
-    <hr />
-    @ViewData["Message"]
-    <div>
-        <div id="AddClient" style="display:none;">
-            @{await Html.RenderPartialAsync("_AddClient");}
+    @if (Model.PageViewModel.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           class="btn btn-outline-dark" style="border-color:black;">
+            Вперед
+            <i class="glyphicon glyphicon-chevron-right"></i>
+        </a>
+    }
+    <br />
+    @if (User.IsInRole("Администратор"))
+    {
+        <div>
+            <input type="submit" style="border-color:black;" value="Добавить запись" onclick="changeAddVisibility()" />
+            <input type="submit" style="border-color:black;" value="Удалить запись" onclick="changeDeleteVisibility()" />
+            <input type="submit" style="border-color:black;" value="Изменить запись" onclick="changeUpdateVisibility()" />
         </div>
-        <div id="DeleteClient" style="display:none;">
-            @{await Html.RenderPartialAsync("_DeleteClient");}
+        <hr />
+        @ViewData["Message"]
+        <div>
+            <div id="AddClient" style="display:none;">
+                @{await Html.RenderPartialAsync("_AddClient");}
+            </div>
+            <div id="DeleteClient" style="display:none;">
+                @{await Html.RenderPartialAsync("_DeleteClient");}
+            </div>
+            <div id="UpdateClient" style="display:none;">
+                @{await Html.RenderPartialAsync("_UpdateClient");}
+            </div>
         </div>
-        <div id="UpdateClient" style="display:none;">
-            @{await Html.RenderPartialAsync("_UpdateClient");}
-        </div>
-    </div>
-}
+    }
+</body>

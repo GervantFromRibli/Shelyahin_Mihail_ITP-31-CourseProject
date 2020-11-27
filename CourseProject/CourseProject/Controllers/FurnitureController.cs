@@ -1,10 +1,10 @@
 ﻿using CourseProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CourseProject.Controllers
 {
@@ -12,10 +12,12 @@ namespace CourseProject.Controllers
     {
         // Объект контекста данных
         private readonly ApplicationContext db;
+        private IMemoryCache cache;
 
-        public FurnitureController(ApplicationContext applicationContext)
+        public FurnitureController(ApplicationContext applicationContext, IMemoryCache cache)
         {
             db = applicationContext;
+            this.cache = cache;
         }
 
         // Метод получения страницы клиентов.
@@ -24,7 +26,12 @@ namespace CourseProject.Controllers
         public IActionResult Index(int page = 1, string material = "Все", decimal price = 0)
         {
             int pageSize = 20;
-            List<Furniture> furniture = db.Furniture.ToList();
+            List<Furniture> furniture;
+            if (!cache.TryGetValue("Furniture", out furniture))
+            {
+                furniture = db.Furniture.ToList();
+                cache.Set("Furniture", db.Furniture.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            }
             List<int> Ids = furniture.Select(item => item.Id).ToList();
             List<string> materials = furniture.Select(item => item.Material).ToList();
 
@@ -99,9 +106,9 @@ namespace CourseProject.Controllers
                 id++;
                 db.Furniture.Add(new Furniture() { Id = id, Name = model.Name, Description = model.Description, Material = model.Material, Price = model.Price, Count = model.Count });
                 db.SaveChanges();
-                model.Furniture = db.Furniture.ToList();
-                model.Ids = db.Furniture.Select(item => item.Id).ToList();
-                return View("~/Views/Furniture/Index.cshtml", model);
+                cache.Remove("Furniture");
+                cache.Set("Furniture", db.Furniture.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Furniture");
             }
         }
 
@@ -113,9 +120,9 @@ namespace CourseProject.Controllers
             var furniture = db.Furniture.Where(item => item.Id == model.Id).FirstOrDefault();
             db.Furniture.Remove(furniture);
             db.SaveChanges();
-            model.Furniture = db.Furniture.ToList();
-            model.Ids = db.Furniture.Select(item => item.Id).ToList();
-            return View("~/Views/Furniture/Index.cshtml", model);
+            cache.Remove("Furniture");
+            cache.Set("Furniture", db.Furniture.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+            return RedirectToAction("Index", "Furniture");
         }
 
         [Authorize(Roles = "Администратор, Работник фабрики")]
@@ -165,7 +172,9 @@ namespace CourseProject.Controllers
                 furniture.Price = model.Price;
                 furniture.Count = model.Count;
                 db.SaveChanges();
-                return View("~/Views/Furniture/Index.cshtml", model);
+                cache.Remove("Furniture");
+                cache.Set("Furniture", db.Furniture.ToList(), new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(10)));
+                return RedirectToAction("Index", "Furniture");
             }
         }
     }
