@@ -23,9 +23,9 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index(int page = 1, string providerName = null, string furnitName = "Все")
+        public IActionResult Index(int page = 1, string providerName = null, string furnitName = "Все", string type = null)
         {
-            return View(GetViewModel(page, providerName, furnitName));
+            return View(GetViewModel(page, providerName, furnitName, type));
         }
 
         [Authorize(Roles = "Администратор")]
@@ -90,11 +90,10 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Администратор")]
-        [HttpPost]
-        public IActionResult DeleteWaybill(WaybillIndexViewModel model)
+        public IActionResult DeleteWaybill(int Id)
         {
             ViewData["Message"] = "";
-            var waybill = db.Waybills.Where(item => item.Id == model.Id).FirstOrDefault();
+            var waybill = db.Waybills.Where(item => item.Id == Id).FirstOrDefault();
             db.Waybills.Remove(waybill);
             db.SaveChanges();
             cache.Remove("Waybills");
@@ -103,9 +102,13 @@ namespace CourseProject.Controllers
 
         [Authorize(Roles = "Администратор")]
         [HttpPost]
-        public IActionResult UpdateWaybill(WaybillIndexViewModel model)
+        public IActionResult UpdateWaybill(WaybillIndexViewModel model, string action = null)
         {
             ViewData["Message"] = "";
+            if (action != null)
+            {
+                return DeleteWaybill(model.Id);
+            }
             if (model.ProviderName == null || model.Material == null || model.DateOfSupply == null)
             {
                 ViewData["Message"] += "Отсутствие значений в строках";
@@ -153,7 +156,7 @@ namespace CourseProject.Controllers
             }
         }
 
-        private WaybillIndexViewModel GetViewModel(int page = 1, string providerName = null, string furnitName = "Все")
+        private WaybillIndexViewModel GetViewModel(int page = 1, string providerName = null, string furnitName = "Все", string type = null)
         {
             int pageSize = 20;
             List<Employee> employees = db.Employees.ToList();
@@ -193,6 +196,21 @@ namespace CourseProject.Controllers
                 waybillViewModels = waybillViewModels.Where(item => item.FurnitureName == furnitName).ToList();
             }
 
+            if (type != null)
+            {
+                waybillViewModels = type switch
+                {
+                    "Id" => waybillViewModels.OrderBy(item => item.Id).ToList(),
+                    "numb" => waybillViewModels.OrderBy(item => item.ProviderId).ToList(),
+                    "date" => waybillViewModels.OrderBy(item => item.DateOfSupply).ToList(),
+                    "providerName" => waybillViewModels.OrderBy(item => item.ProviderName).ToList(),
+                    "material" => waybillViewModels.OrderBy(item => item.Material).ToList(),
+                    "price" => waybillViewModels.OrderBy(item => item.Price).ToList(),
+                    "weight" => waybillViewModels.OrderBy(item => item.Weight).ToList(),
+                    "furnit" => waybillViewModels.OrderBy(item => item.FurnitureName).ToList(),
+                    _ => waybillViewModels.OrderBy(item => item.EmployeeFIO).ToList(),
+                };
+            }
             WaybillIndexViewModel waybillIndexViewModel = new WaybillIndexViewModel()
             {
                 WaybillViewModels = waybillViewModels.Skip((page - 1) * pageSize).Take(pageSize).ToList(),

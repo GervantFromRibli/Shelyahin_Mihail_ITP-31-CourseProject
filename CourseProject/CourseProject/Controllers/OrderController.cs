@@ -23,9 +23,9 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index(int page = 1, string furniture = "Все", string clientName = "Все")
+        public IActionResult Index(int page = 1, string furniture = "Все", string clientName = "Все", string type = null)
         {
-            return View(GetViewModel(page, furniture, clientName));
+            return View(GetViewModel(page, furniture, clientName, type));
         }
 
         [Authorize(Roles = "Администратор, Работник фабрики")]
@@ -121,7 +121,7 @@ namespace CourseProject.Controllers
             }
         }
 
-        private OrderIndexViewModel GetViewModel(int page = 1, string furnitureName = "Все", string clientName = "Все")
+        private OrderIndexViewModel GetViewModel(int page = 1, string furnitureName = "Все", string clientName = "Все", string type = null)
         {
             int pageSize = 20;
             List<Employee> employees = db.Employees.ToList();
@@ -162,6 +162,21 @@ namespace CourseProject.Controllers
             if (clientName != "Все")
             {
                 orderViewModels = orderViewModels.Where(item => item.ClientName == clientName).ToList();
+            }
+
+            if (type != null)
+            {
+                orderViewModels = type switch
+                {
+                    "Id" => orderViewModels.OrderBy(item => item.Id).ToList(),
+                    "client" => orderViewModels.OrderBy(item => item.ClientName).ToList(),
+                    "furnit" => orderViewModels.OrderBy(item => item.FurnitureName).ToList(),
+                    "count" => orderViewModels.OrderBy(item => item.FurnitureCount).ToList(),
+                    "price" => orderViewModels.OrderBy(item => item.Price).ToList(),
+                    "disc" => orderViewModels.OrderBy(item => item.DiscountPercent).ToList(),
+                    "isComp" => orderViewModels.OrderBy(item => item.IsCompleted).ToList(),
+                    _ => orderViewModels.OrderBy(item => item.EmployeeFIO).ToList(),
+                };
             }
 
             OrderIndexViewModel orderIndexViewModel = new OrderIndexViewModel()

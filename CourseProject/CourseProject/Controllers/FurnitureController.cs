@@ -23,7 +23,7 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index(int page = 1, string material = "Все", decimal price = 0)
+        public IActionResult Index(int page = 1, string material = "Все", decimal price = 0, string type = null)
         {
             int pageSize = 20;
             List<Furniture> furniture;
@@ -45,6 +45,19 @@ namespace CourseProject.Controllers
             if (price != 0)
             {
                 furniture = furniture.Where(item => item.Price == price).ToList();
+            }
+
+            if (type != null)
+            {
+                furniture = type switch
+                {
+                    "Id" => furniture.OrderBy(item => item.Id).ToList(),
+                    "name" => furniture.OrderBy(item => item.Name).ToList(),
+                    "descr" => furniture.OrderBy(item => item.Description).ToList(),
+                    "material" => furniture.OrderBy(item => item.Material).ToList(),
+                    "price" => furniture.OrderBy(item => item.Price).ToList(),
+                    _ => furniture.OrderBy(item => item.Count).ToList(),
+                };
             }
 
             FurnitureIndexViewModel furnitureIndexViewModel = new FurnitureIndexViewModel()
@@ -113,11 +126,10 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Администратор, Работник фабрики")]
-        [HttpPost]
-        public IActionResult DeleteFurniture(FurnitureIndexViewModel model)
+        public IActionResult DeleteFurniture(int id)
         {
             ViewData["Message"] = "";
-            var furniture = db.Furniture.Where(item => item.Id == model.Id).FirstOrDefault();
+            var furniture = db.Furniture.Where(item => item.Id == id).FirstOrDefault();
             db.Furniture.Remove(furniture);
             db.SaveChanges();
             cache.Remove("Furniture");
@@ -127,8 +139,12 @@ namespace CourseProject.Controllers
 
         [Authorize(Roles = "Администратор, Работник фабрики")]
         [HttpPost]
-        public IActionResult UpdateFurniture(FurnitureIndexViewModel model)
+        public IActionResult UpdateFurniture(FurnitureIndexViewModel model, string action = null)
         {
+            if (action != null)
+            {
+                return DeleteFurniture(model.Id);
+            }
             var names = db.Furniture.Select(item => item.Name);
             ViewData["Message"] = "";
             model.Furniture = db.Furniture.ToList();

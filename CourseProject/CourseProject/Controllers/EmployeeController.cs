@@ -23,7 +23,7 @@ namespace CourseProject.Controllers
         // Метод получения страницы работников.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index(int page = 1, string position = "Все", string education = null)
+        public IActionResult Index(int page = 1, string position = "Все", string education = null, string type = null)
         {
             int pageSize = 20;
             List<Employee> employees;
@@ -46,6 +46,16 @@ namespace CourseProject.Controllers
                 employees = employees.Where(item => item.Education.Contains(education)).ToList();
             }
 
+            if (type != null)
+            {
+                employees = type switch
+                {
+                    "Id" => employees.OrderBy(item => item.Id).ToList(),
+                    "pos" => employees.OrderBy(item => item.Position).ToList(),
+                    "fio" => employees.OrderBy(item => item.FIO).ToList(),
+                    _ => employees.OrderBy(item => item.Education).ToList(),
+                };
+            }
 
             EmployeeIndexViewModel employeeIndexViewModel = new EmployeeIndexViewModel()
             {
@@ -103,11 +113,10 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Администратор")]
-        [HttpPost]
-        public IActionResult DeleteEmployee(EmployeeIndexViewModel model)
+        public IActionResult DeleteEmployee(int id)
         {
             ViewData["Message"] = "";
-            var employee = db.Employees.Where(item => item.Id == model.Id).FirstOrDefault();
+            var employee = db.Employees.Where(item => item.Id == id).FirstOrDefault();
             db.Employees.Remove(employee);
             db.SaveChanges();
             cache.Remove("Employees");
@@ -117,8 +126,12 @@ namespace CourseProject.Controllers
 
         [Authorize(Roles = "Администратор")]
         [HttpPost]
-        public IActionResult UpdateEmployee(EmployeeIndexViewModel model)
+        public IActionResult UpdateEmployee(EmployeeIndexViewModel model, string action = null)
         {
+            if (action != null)
+            {
+                return DeleteEmployee(model.Id);
+            }
             var fios = db.Employees.Select(item => item.FIO);
             ViewData["Message"] = "";
             model.Employees = db.Employees.ToList();

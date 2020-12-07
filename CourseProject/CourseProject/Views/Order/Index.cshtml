@@ -4,19 +4,13 @@
 }
 <script>
     function changeAddVisibility() {
-        document.getElementById('DeleteOrder').style.display = "none";
         document.getElementById('UpdateOrder').style.display = "none";
         document.getElementById('AddOrder').style.display = "block";
     }
-    function changeDeleteVisibility() {
-        document.getElementById('DeleteOrder').style.display = "block";
-        document.getElementById('UpdateOrder').style.display = "none";
-        document.getElementById('AddOrder').style.display = "none";
-    }
-    function changeUpdateVisibility() {
-        document.getElementById('DeleteOrder').style.display = "none";
+    function changeUpdateVisibility(id) {
         document.getElementById('UpdateOrder').style.display = "block";
         document.getElementById('AddOrder').style.display = "none";
+        $("#id").val(id);
     }
     function SetSession() {
         sessionStorage.setItem("clientName", $("#value1 option:selected").val());
@@ -51,7 +45,7 @@
         </div>
         <br />
         <div>
-            <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+            <input type="submit" value="Фильтр" class="btn btn-default" />
         </div>
     </form>
     <br />
@@ -60,28 +54,28 @@
             <thead>
                 <tr>
                     <td>
-                        Id
+                        <a asp-action="Index" asp-route-type="Id">Id</a>
                     </td>
                     <td>
-                        Название клиента
+                        <a asp-action="Index" asp-route-type="client">Название клиента</a>
                     </td>
                     <td>
-                        Название мебели
+                        <a asp-action="Index" asp-route-type="furnit">Название мебели</a>
                     </td>
                     <td>
-                        Кол-во мебели
+                        <a asp-action="Index" asp-route-type="count">Кол-во мебели</a>
                     </td>
                     <td>
-                        Цена
+                        <a asp-action="Index" asp-route-type="price">Цена</a>
                     </td>
                     <td>
-                        Скидка
+                        <a asp-action="Index" asp-route-type="disc">Скидка</a>
                     </td>
                     <td>
-                        Выполнен?
+                        <a asp-action="Index" asp-route-type="isComp">Выполнен?</a>
                     </td>
                     <td>
-                        ФИО сотрудника
+                        <a asp-action="Index" asp-route-type="empl">ФИО сотрудника</a>
                     </td>
                 </tr>
             </thead>
@@ -89,7 +83,14 @@
             {
                 <tr>
                     <td>
-                        @elem.Id
+                        @if (User.IsInRole("Администратор") || User.IsInRole("Работник фабрики"))
+                        {
+                            <input type="button" class="btn-default" style="border:hidden; width:100%; background-color: rgba(0,100,0,0.9); color:white;" value="@elem.Id" onclick="changeUpdateVisibility(@elem.Id)" />
+                        }
+                        else
+                        {
+                            @elem.Id
+                        }
                     </td>
                     <td>
                         @elem.ClientName
@@ -126,41 +127,37 @@
             }
         </table>
     </div>
-    <br />
-    @if (Model.PageViewModel.HasPreviousPage)
-    {
-        <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-           class="btn btn-outline-dark">
-            <i class="glyphicon glyphicon-chevron-left"></i>
-            Назад
-        </a>
-    }
-    @if (Model.PageViewModel.HasNextPage)
-    {
-        <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-           class="btn btn-outline-dark">
-            Вперед
-            <i class="glyphicon glyphicon-chevron-right"></i>
-        </a>
-    }
+    <div>
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+               class="btn" style="border:2px solid white;">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Назад
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+               class="btn" style="border:2px solid white;">
+                Вперед
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+    </div>
     <br />
     @if (User.IsInRole("Администратор") || User.IsInRole("Работник фабрики"))
     {
         <div>
-            <input type="submit" value="Добавить запись" onclick="changeAddVisibility()" />
-            <input type="submit" value="Удалить запись" onclick="changeDeleteVisibility()" />
-            <input type="submit" value="Изменить запись" onclick="changeUpdateVisibility()" />
+            <input type="submit" class="btn-default" value="Добавить запись" onclick="changeAddVisibility()" />
         </div>
         <hr />
         @ViewData["Message"]
         <div>
             <div id="AddOrder" style="display:none;">
                 @{await Html.RenderPartialAsync("_AddOrder");}
-            </div>
-            <div id="DeleteOrder" style="display:none;">
-                @{await Html.RenderPartialAsync("_DeleteOrder");}
             </div>
             <div id="UpdateOrder" style="display:none;">
                 @{await Html.RenderPartialAsync("_UpdateOrder");}

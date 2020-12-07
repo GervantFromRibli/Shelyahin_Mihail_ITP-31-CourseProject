@@ -23,7 +23,7 @@ namespace CourseProject.Controllers
         // Метод получения страницы клиентов.
         // Данная страница кэшируется на 286 секунд.
         [ResponseCache(CacheProfileName = "TablesCaching")]
-        public IActionResult Index(int page = 1, string filterRepresFIO = "Все", string address = null)
+        public IActionResult Index(int page = 1, string filterRepresFIO = "Все", string address = null, string type = null)
         {
             int pageSize = 20;
             List<Client> clients;
@@ -44,6 +44,18 @@ namespace CourseProject.Controllers
             if (address != null)
             {
                 clients = clients.Where(item => item.Address.Contains(address)).ToList();
+            }
+
+            if (type != null)
+            {
+                clients = type switch
+                {
+                    "Id" => clients.OrderBy(item => item.Id).ToList(),
+                    "name" => clients.OrderBy(item => item.Name).ToList(),
+                    "fio" => clients.OrderBy(item => item.RepresentativeFIO).ToList(),
+                    "numb" => clients.OrderBy(item => item.Number).ToList(),
+                    _ => clients.OrderBy(item => item.Address).ToList(),
+                };
             }
 
             ClientIndexViewModel clientIndexViewModel = new ClientIndexViewModel()
@@ -107,11 +119,10 @@ namespace CourseProject.Controllers
         }
 
         [Authorize(Roles = "Администратор")]
-        [HttpPost]
-        public IActionResult DeleteClient(ClientIndexViewModel model)
+        public IActionResult DeleteClient(int id)
         {
             ViewData["Message"] = "";
-            var client = db.Clients.Where(item => item.Id == model.Id).FirstOrDefault();
+            var client = db.Clients.Where(item => item.Id == id).FirstOrDefault();
             db.Clients.Remove(client);
             db.SaveChanges();
             cache.Remove("Clients");
@@ -121,8 +132,12 @@ namespace CourseProject.Controllers
 
         [Authorize(Roles = "Администратор")]
         [HttpPost]
-        public IActionResult UpdateClient(ClientIndexViewModel model)
+        public IActionResult UpdateClient(ClientIndexViewModel model, string action = null)
         {
+            if (action != null)
+            {
+                return DeleteClient(model.Id);
+            }
             var names = db.Clients.Select(item => item.Name);
             ViewData["Message"] = "";
             model.Clients = db.Clients.ToList();

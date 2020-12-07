@@ -3,30 +3,36 @@
     ViewBag.Title = "Список пользователей";
 }
 
-<a asp-action="Create">Добавить пользователя</a>
+<div class="text-center">
+    <h1>
+        Список пользователей
+    </h1>
 
-<table class="table">
-    <tr><th>Email</th><th>ФИО</th><th>Возраст</th></tr>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>@user.Email</td>
-            <td>@user.FIO</td>
-            <td>@user.Age</td>
-            <td>
-                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        Удалить
-                    </button>
-                </form>
-            </td>
-            <td>
-                <form asp-action="Edit" asp-route-id="@user.Id" method="post">
-                    <button type="submit" class="btn btn-sm btn-secondary">
-                        Изменить
-                    </button>
-                </form>
-            </td>
-        </tr>
-    }
-</table>
+    <a asp-action="Create">Добавить пользователя</a>
+
+    <table align="center" border="1" style="border-color: black;">
+        <tr><th>Email</th><th>ФИО</th><th>Возраст</th></tr>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FIO</td>
+                <td>@user.Age</td>
+                <td>
+                    <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                        <button type="submit" style="color:white;">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="Edit" asp-route-id="@user.Id" method="get">
+                        <button type="submit" style="color:white;">
+                            Изменить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

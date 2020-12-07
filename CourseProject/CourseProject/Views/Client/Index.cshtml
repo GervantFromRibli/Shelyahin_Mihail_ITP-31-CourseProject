@@ -4,19 +4,13 @@
 }
 <script>
     function changeAddVisibility() {
-        document.getElementById('DeleteClient').style.display = "none";
         document.getElementById('UpdateClient').style.display = "none";
         document.getElementById('AddClient').style.display = "block";
     }
-    function changeUpdateVisibility() {
-        document.getElementById('DeleteClient').style.display = "none";
+    function changeUpdateVisibility(id) {
         document.getElementById('UpdateClient').style.display = "block";
         document.getElementById('AddClient').style.display = "none";
-    }
-    function changeDeleteVisibility() {
-        document.getElementById('DeleteClient').style.display = "block";
-        document.getElementById('UpdateClient').style.display = "none";
-        document.getElementById('AddClient').style.display = "none";
+        $("#id").val(id);
     }
     function SetSession() {
         sessionStorage.setItem("address", $("#value1").val());
@@ -46,27 +40,27 @@
         </div>
         <br />
         <div>
-            <input type="submit" style="border-color:black;" value="Фильтр" class="btn btn-default" />
+            <input type="submit" value="Фильтр" class="btn btn-default" />
         </div>
     </form>
     <br />
-    <table border="1">
+    <table border="1" style="left:10%;">
         <thead>
             <tr>
                 <td>
-                    Id
+                    <a asp-action="Index" asp-route-type="Id">Id</a>
                 </td>
                 <td>
-                    Название
+                    <a asp-action="Index" asp-route-type="name">Название</a>
                 </td>
                 <td>
-                    ФИО представителя
+                    <a asp-action="Index" asp-route-type="fio">ФИО представителя</a>
                 </td>
                 <td>
-                    Номер
+                    <a asp-action="Index" asp-route-type="numb">Номер</a>
                 </td>
                 <td>
-                    Адрес
+                    <a asp-action="Index" asp-route-type="addr">Адрес</a>
                 </td>
             </tr>
         </thead>
@@ -74,7 +68,14 @@
         {
             <tr>
                 <td>
-                    @elem.Id
+                    @if (User.IsInRole("Администратор"))
+                    {
+                        <input type="button" class="btn-default" style="border:hidden; width:100%; background-color: rgba(0,100,0,0.9); color:white;" value="@elem.Id" onclick="changeUpdateVisibility(@elem.Id)" />
+                    }
+                    else
+                    {
+                        @elem.Id
+                    }
                 </td>
                 <td>
                     @elem.Name
@@ -91,41 +92,37 @@
             </tr>
         }
     </table>
-    <br />
-    @if (Model.PageViewModel.HasPreviousPage)
-    {
-        <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-           class="btn btn-outline-dark" style="border-color:black;">
-            <i class="glyphicon glyphicon-chevron-left"></i>
-            Назад
-        </a>
-    }
-    @if (Model.PageViewModel.HasNextPage)
-    {
-        <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-           class="btn btn-outline-dark" style="border-color:black;">
-            Вперед
-            <i class="glyphicon glyphicon-chevron-right"></i>
-        </a>
-    }
+    <div>
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+               class="btn" style="border:2px solid white;">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Назад
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+               class="btn" style="border:2px solid white;">
+                Вперед
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+    </div>
     <br />
     @if (User.IsInRole("Администратор"))
     {
         <div>
-            <input type="submit" style="border-color:black;" value="Добавить запись" onclick="changeAddVisibility()" />
-            <input type="submit" style="border-color:black;" value="Удалить запись" onclick="changeDeleteVisibility()" />
-            <input type="submit" style="border-color:black;" value="Изменить запись" onclick="changeUpdateVisibility()" />
+            <input type="submit" class="btn-default" value="Добавить запись" onclick="changeAddVisibility()" />
         </div>
         <hr />
         @ViewData["Message"]
         <div>
             <div id="AddClient" style="display:none;">
                 @{await Html.RenderPartialAsync("_AddClient");}
-            </div>
-            <div id="DeleteClient" style="display:none;">
-                @{await Html.RenderPartialAsync("_DeleteClient");}
             </div>
             <div id="UpdateClient" style="display:none;">
                 @{await Html.RenderPartialAsync("_UpdateClient");}
