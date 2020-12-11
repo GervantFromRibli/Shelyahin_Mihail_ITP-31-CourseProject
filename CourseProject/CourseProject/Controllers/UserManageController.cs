@@ -11,10 +11,12 @@ namespace CourseProject.Controllers
     public class UserManageController : Controller
     {
         UserManager<User> _userManager;
+        RoleManager<IdentityRole> _roleManager;
 
-        public UserManageController(UserManager<User> userManager)
+        public UserManageController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index() 
@@ -34,6 +36,11 @@ namespace CourseProject.Controllers
             {
                 User user = new User { Email = model.Email, UserName = model.Email, Age = model.Age, FIO = model.FIO };
                 var result = await _userManager.CreateAsync(user, model.Password);
+                if (!await _roleManager.RoleExistsAsync(model.UserRole))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole(model.UserRole));
+                }
+                await _userManager.AddToRoleAsync(user, model.UserRole);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");

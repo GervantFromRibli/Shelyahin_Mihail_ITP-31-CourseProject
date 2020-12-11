@@ -1,59 +1,227 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="CourseProject.Controllers.AccountController">
-    <Position X="13" Y="1.25" Width="1.5" />
+    <Position X="14.5" Y="8" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAAABAAAIgAAABAAAAAAAQAAAAAAA=</HashCode>
       <FileName>Controllers\AccountController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.ClientController">
-    <Position X="14.75" Y="1.25" Width="1.5" />
+    <Position X="16.5" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAEDAAAAAAQ=</HashCode>
       <FileName>Controllers\ClientController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.EmployeeController">
-    <Position X="7.75" Y="1.25" Width="1.5" />
+    <Position X="8.5" Y="8" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ACAAAEAAAAIQAAAAAAAAAAAAAAAAAAAIAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\EmployeeController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.FurnitureController">
-    <Position X="11.25" Y="1.25" Width="1.5" />
+    <Position X="12.25" Y="8" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAABAQAAAAAAAAAAAAAAgAAAAAAAMAAAAAAAA=</HashCode>
       <FileName>Controllers\FurnitureController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.HomeController">
-    <Position X="9.5" Y="1.25" Width="1.5" />
+    <Position X="10.5" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAIAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\HomeController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.OrderController">
-    <Position X="6" Y="1.25" Width="1.5" />
+    <Position X="6.75" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ASAAAAAgEAAQAAAAAAAAAAAAAAAAAAAAAEEAAAAAAAA=</HashCode>
       <FileName>Controllers\OrderController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.UserManageController">
-    <Position X="4.25" Y="1.25" Width="1.5" />
+    <Position X="4.5" Y="8" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAgAAEAAEACAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\UserManageController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CourseProject.Controllers.WaybillController">
-    <Position X="2.5" Y="1.25" Width="1.5" />
+    <Position X="2.75" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAEAAQACAAAAQAAAACAAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>Controllers\WaybillController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.MiddleWares.DbInitializMiddleWare">
+    <Position X="0.5" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>MiddleWares\DbInitializeMiddleWare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.MiddleWares.DbInitializeExtensions">
+    <Position X="18.25" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MiddleWares\DbInitializeMiddleWare.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.CreateUserViewModel">
+    <Position X="2.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAACAAAAAAAEAAAAAAAAAAAAgCAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\CreateUserViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.EditUserViewModel">
+    <Position X="4.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAACAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\EditUserViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.IdentityContext">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\IdentityContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.LoginViewModel">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAIAAAAgAAA=</HashCode>
+      <FileName>Models\Account\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.RegisterViewModel">
+    <Position X="9.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAACAAAAAAAEAAAAAAgAAAAAgCAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\RegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.User">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Account\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.PageViewModel">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAgAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PageViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.ErrorViewModel">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ErrorViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.DbInitializer">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\DbInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.ApplicationContext">
+    <Position X="17" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAACAAAAAACAAAAAAAAEACAAAAAAA=</HashCode>
+      <FileName>Models\ApplicationContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.Client">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAEAAAAQAAAAAAAACAAAAAgAAAAA=</HashCode>
+      <FileName>Models\Clients\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.ClientIndexViewModel">
+    <Position X="2.25" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIAAAAEAAAAAGAACAQAAAAAgAACAAAAAgAAAAA=</HashCode>
+      <FileName>Models\Clients\ClientIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.Employee">
+    <Position X="4.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\Employees\Employee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.EmployeeIndexViewModel">
+    <Position X="6.25" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgACAgAAAAAAAAAgAAAACAAgCAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\Employees\EmployeeIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.Furniture">
+    <Position X="8.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAQAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Furnitures\Furniture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.FurnitureIndexViewModel">
+    <Position X="10.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAQAgAAAAAAAADAQAAAAAAAAAABACAAAAAAA=</HashCode>
+      <FileName>Models\Furnitures\FurnitureIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.Order">
+    <Position X="12.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAAAAQAQAAAAgAAAAAAAAAAAABAAAAAAIAACAAA=</HashCode>
+      <FileName>Models\Orders\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.OrderIndexViewModel">
+    <Position X="14.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAACAACAAQAAIAAIAAABGAAAACAAABAAQgAAIYAgAAA=</HashCode>
+      <FileName>Models\Orders\OrderIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.OrderViewModel">
+    <Position X="16.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAAAAQAAAAAIAAAAAAAAAAAAABAAQgAAIAAAAAA=</HashCode>
+      <FileName>Models\Orders\OrderViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.Waybill">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAQAQAAAABAAAAAAAACAAAAAAAAAAgAASAAA=</HashCode>
+      <FileName>Models\Waybills\Waybill.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.WaybillIndexViewModel">
+    <Position X="20.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AEACgAAAAQAABAAIBAEBCAAAACAAAAAAAgAAgAAwAAA=</HashCode>
+      <FileName>Models\Waybills\WaybillIndexViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CourseProject.Models.WaybillViewModel">
+    <Position X="20.25" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEACAAAAAQAAAAAIBAAAAAAAACAAAAAAAgAAgAAQAAA=</HashCode>
+      <FileName>Models\Waybills\WaybillViewModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
