@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список накладных</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <link href="lib/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <script src="lib/jquery-ui/jquery-ui.js"></script>
+    <script src="lib/jquery-ui/ui/i18n/datepicker-ru.js"></script>
+</head>
+<body>
+    <h2 style="margin-left:15px; margin-top:15px;">Список накладных</h2>
+    <form name="waybillForm">
+        <input type="hidden" name="id" id="id" value="-1" />
+        <table border="0">
+            <tr>
+                <td>
+                    <div style="margin-left:15px;">
+                        <label for="providerId">Номер поставщика:</label>
+                        <input type="number" min="-1" class="form-control" name="providerId" id="providerId" />
+                    </div>
+                    <div style="margin-left:15px; margin-top:15px;">
+                        <label for="providerName">Название поставщика:</label>
+                        <input class="form-control" name="providerName" id="providerName" />
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-left:15px;">
+                        <label for="date">Дата поставки:</label>
+                        <input class="form-control" name="date" id="date" />
+                    </div>
+                    <div style="margin-left:15px; margin-top:15px;">
+                        <label for="material">Материал:</label>
+                        <input class="form-control" name="material" id="material" />
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-left:15px;">
+                        <label for="price">Цена:</label>
+                        <input class="form-control" name="price" id="price" />
+                    </div>
+                    <div style="margin-left:15px; margin-top:15px;">
+                        <label for="weight">Вес:</label>
+                        <input class="form-control" name="weight" id="weight" />
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-left:15px;">
+                        <label for="furnit">Название мебели:</label>
+                        <select class="form-control" name="furnit" id="furnit"></select>
+                    </div>
+                    <div style="margin-left:15px; margin-top:15px;">
+                        <label for="employee">ФИО работника:</label>
+                        <select class="form-control" name="emplList" id="emplList"></select>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div style="margin: 15px 0 15px 15px;">
+            <button id="submit" class="btn btn-primary" onclick="StartSave()">Сохранить</button>
+            <a id="reset" class="btn btn-primary" onclick="reset()">Сбросить</a>
+        </div>
+    </form>
+    <table class="table table-condensed table-striped  col-md-6">
+        <thead><tr><th>Id</th><th>Номер поставщика</th><th>Название поставщика</th><th>Дата поставки</th><th>Материал</th><th>Цена</th><th>Вес</th><th>Название мебели</th><th>ФИО работника</th><th></th></tr></thead>
+        <tbody id="data">
+        </tbody>
+    </table>
+    <script>
+        // Получение всех накладных
+        async function GetWaybills() {
+            $.ajax({
+                url: '/api/waybills',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (waybills) {
+                    var rows = "";
+                    $.each(waybills, function (index, waybill) {
+                        // добавляем полученные элементы в таблицу
+                        rows += row(waybill);
+                    })
+                    $("table tbody#data").append(rows);
+                }
+            });
+        }
+        // Получение данных для списков
+        async function GetEmpl() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/waybills/empl',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (empls) {
+                    $.each(empls, function (index, empl) {
+                        listItems = listItems + "<option value='" + empl.id + "'>" + empl.fio + "</option>";
+                    });
+                    $("#emplList").html(listItems);
+                }
+            });
+        }
+        // Получение данных для списков
+        async function GetFurnit() {
+            var listItems = "";
+            $.ajax({
+                url: '/api/waybills/furnit',
+                type: 'GET',
+                contentType: "application/json",
+                success: function (furnits) {
+                    $.each(furnits, function (index, furnit) {
+                        listItems = listItems + "<option value='" + furnit.id + "'>" + furnit.name + "</option>";
+                    });
+                    $("#furnit").html(listItems);
+                }
+            });
+        }
+        // Получение одной накладной
+        function GetWaybill(id) {
+            $.ajax({
+                url: '/api/waybills/' + id,
+                type: 'GET',
+                contentType: "application/json",
+                success: function (waybill) {
+                    var form = document.forms["waybillForm"];
+                    form.elements["id"].value = waybill.id;
+                    form.elements["providerId"].value = waybill.providerId;
+                    form.elements["providerName"].value = waybill.providerName;
+                    form.elements["date"].value = waybill.dateOfSupply.substring(0, 10);
+                    form.elements["material"].value = waybill.material;
+                    form.elements["price"].value = waybill.price;
+                    form.elements["weight"].value = waybill.weight;
+                    form.elements["furnit"].selectedValue = waybill.furnitureName;
+                    form.elements["emplList"].selectedValue = waybill.employeeFIO;
+                }
+            });
+        }
+        // Добавление пользователя
+        function CreateWaybill(providerId, providerName, date, material, price, weight, furnitureId, employeeId) {
+            $.ajax({
+                url: "api/waybills",
+                contentType: "application/json",
+                method: "POST",
+                data: JSON.stringify({
+                    Id: -1,
+                    providerId: parseInt(providerId, 10),
+                    providerName: providerName,
+                    dateOfSupply: date,
+                    material: material,
+                    price: parseFloat(price),
+                    weight: parseFloat(weight),
+                    furnitureId: parseInt(furnitureId, 10),
+                    employeeId: parseInt(employeeId, 10)
+                }),
+                success: function (waybill) {
+                    reset();
+                    $("table tbody#data").append(row(waybill));
+                },
+                error: function () {
+                    alert("Error");
+                }
+            });
+        }
+        // Изменение пользователя
+        async function EditWaybill(id, providerId, providerName, date, material, price, weight, furnitureName, employeeFIO) {
+            $.ajax({
+                url: "api/waybills",
+                contentType: "application/json",
+                method: "PUT",
+                data: JSON.stringify({
+                    Id: parseInt(id, 10),
+                    providerId: parseInt(providerId, 10),
+                    providerName: providerName,
+                    dateOfSupply: date,
+                    material: material,
+                    price: parseFloat(price),
+                    weight: parseFloat(weight),
+                    furnitureId: parseInt(furnitureName, 10),
+                    employeeId: parseInt(employeeFIO, 10)
+                }),
+                success: function (waybill) {
+                    reset();
+                    document.querySelector("tr[data-rowid='" + waybill.id + "']").replaceWith(row(waybill));
+                },
+                error: function () {
+                    alert("Error");
+                }
+            });
+        }
+        // Удаление пользователя
+        async function DeleteWaybill(id) {
+            $.ajax({
+                url: "api/waybills/" + id,
+                contentType: "application/json",
+                method: "DELETE",
+                success: function (id) {
+                    $("tr[data-rowid='" + id + "']").remove();
+                }
+            });
+        }
+
+        // сброс формы
+        function reset() {
+            const form = document.forms["waybillForm"];
+            form.reset();
+            form.elements["id"].value = -1;
+        }
+        // создание строки для таблицы
+                var row = function (waybill) {
+                    return "<tr data-rowid='" + waybill.id + "'><td>" + waybill.id + "</td > <td>" + waybill.providerId + "</td>" +
+                "<td>" + waybill.providerName + "</td>" +
+                "<td>" + waybill.dateOfSupply.substring(0, 10) + "</td>" +
+                "<td>" + waybill.material + "</td>" +
+                "<td>" + waybill.price + "</td>" +
+                "<td>" + waybill.weight + "</td>" +
+                "<td>" + waybill.furnitureName + "</td>" +
+                        "<td>" + waybill.employeeFIO + "</td>" +
+                        "<td><button onclick='GetWaybill(" + waybill.id + ")'>Изменить</button> | " +
+                        "<button onclick='DeleteWaybill(" + waybill.id + ")'>Удалить</button></td></tr>";
+        }
+        // сброс значений формы
+        document.getElementById("reset").click(function (e) {
+            e.preventDefault();
+            reset();
+        })
+
+        // отправка формы
+        function StartSave() {
+            const form = document.forms["waybillForm"];
+            const id = form.elements["id"].value;
+            const providerId = form.elements["providerId"].value;
+            const providerName = form.elements["providerName"].value;
+            const date = form.elements["date"].value;
+            const material = form.elements["material"].value;
+            const price = form.elements["price"].value;
+            const weight = form.elements["weight"].value;
+            const furnitId = $("#furnit option:selected").val();
+            const emplId = $("#emplList option:selected").val();
+            if (id == -1)
+                CreateWaybill(providerId, providerName, date, material, price, weight, furnitId, emplId);
+            else
+                EditWaybill(id, providerId, providerName, date, material, price, weight, furnitId, emplId);
+        }
+
+        // загрузка накладных
+        GetWaybills();
+        GetEmpl();
+        GetFurnit();
+
+    </script>
+</body>
+</html>
